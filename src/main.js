@@ -1,4 +1,4 @@
-import { createSiteNavigationTemplate } from './view/site-navigation.js';
+import { createMainNavigationTemplate } from './view/main-navigation.js';
 import { createSiteSortTemplate } from './view/site-sort.js';
 import { createMainContentTemplate } from './view/main-content.js';
 import { createAllFilmsTemplate } from './view/all-films.js';
@@ -28,15 +28,13 @@ const InsertPosition = {
 const films = new Array(MAX_FILM_COUNT).fill().map(generateFilm);
 const filters = generateFilter(films);
 
-console.log(films);
-
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
 
 const siteMain = document.querySelector('.main');
 
-render(siteMain, createSiteNavigationTemplate(filters), InsertPosition.BEFORE_END);
+render(siteMain, createMainNavigationTemplate(filters), InsertPosition.BEFORE_END);
 render(siteMain, createSiteSortTemplate(), InsertPosition.BEFORE_END);
 render(siteMain, createMainContentTemplate(), InsertPosition.BEFORE_END);
 

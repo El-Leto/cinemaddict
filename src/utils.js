@@ -1,3 +1,20 @@
+const MINUTES_PER_HOUR = 60;
+
+const MONTHS = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
 const getRandomNumber = function(min, max) {
   if (min < 0 || max <= min) {
     throw new Error('Неверные данные');
@@ -39,28 +56,22 @@ const getShuffledArray = (arr) => {
 };
 
 const getTimeFromMins = (mins) => {
-  const hours = Math.trunc(mins/60);
-  const minutes = mins % 60;
-  if (mins > 60) {
+  const hours = Math.trunc(mins/MINUTES_PER_HOUR);
+  const minutes = mins % MINUTES_PER_HOUR;
+  if (mins > MINUTES_PER_HOUR) {
     return hours + 'h ' + minutes + 'm';
-  } else {
-    return minutes + 'm';
   }
+
+  return minutes + 'm';
 };
 
-const MONTHS = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
+const getTruncatedText = (text, maxLength) =>
+  text.length > maxLength
+    ? `${text.slice(0, maxLength - 1)}…`
+    : text;
 
-export { getRandomInteger, getRandomFixed, getRandomArrayElement, getNewArray, getTimeFromMins, MONTHS, getShuffledArray };
+const getСapitalLetter = (word) => (
+  `${word[0].toUpperCase()}${word.slice(1)}`
+);
+
+export { getRandomInteger, getRandomFixed, getRandomArrayElement, getNewArray, getTimeFromMins, MONTHS, getShuffledArray, getTruncatedText, getСapitalLetter };

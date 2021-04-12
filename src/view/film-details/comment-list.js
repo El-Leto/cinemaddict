@@ -2,7 +2,7 @@ const createCommentTemplate = (comment) => {
   return (
     `<li class="film-details__comment">
       <span class="film-details__comment-emoji">
-        <img src="./images/emoji/${comment.emotion}.png" width="55" height="55" alt="emoji-smile">
+        <img src="./images/emoji/${comment.emotion}.png" width="55" height="55" alt="emoji-${comment.emotion}">
       </span>
       <div>
         <p class="film-details__comment-text">${comment.comment}</p>
@@ -18,10 +18,10 @@ const createCommentTemplate = (comment) => {
 
 const createCommentListTemplate = (film) => {
   const {
-    comment,
+    comments,
   } = film;
 
-  const commentList = comment.map((comment) => createCommentTemplate(comment)).join('\n');
+  const commentList = comments.map(createCommentTemplate).join('');
 
   return (
     `<ul class="film-details__comments-list">

@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import { generateText } from './film.js';
-import { getRandomArrayElement, getRandomInteger }  from './utils.js';
+import { getRandomArrayElement, getRandomInteger }  from '../utils.js';
 
 const EMOJI = [
   'smile',

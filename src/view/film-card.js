@@ -1,4 +1,10 @@
-import { getTimeFromMins }  from '../mock/utils.js';
+import { getTimeFromMins, getTruncatedText }  from '../utils.js';
+
+const MAX_LENGTH = 140;
+
+const createControlTemplate = (className, text, value) => (
+  `<button class="film-card__controls-item button film-card__controls-item--${className} ${value ? 'film-card__controls-item--active' : ''}" type="button">${text}</button>`
+);
 
 export const createFilmCardTemplate = (film) => {
   const {
@@ -9,18 +15,11 @@ export const createFilmCardTemplate = (film) => {
     genres,
     poster,
     description,
-    comment,
+    comments,
     isWatchlist,
     isWatched,
     isFavorite,
   } = film;
-
-  const maxlength = 140;
-
-  const newDescription = (description, maxlength) => {
-    return (description.length > maxlength) ?
-      description.slice(0, maxlength - 1) + '…' : description;
-  };
 
   return (
     `<article class="film-card">
@@ -32,12 +31,12 @@ export const createFilmCardTemplate = (film) => {
         <span class="film-card__genre">${genres[0]}</span>
       </p>
       <img src="${poster}" alt="" class="film-card__poster">
-      <p class="film-card__description">${newDescription(description, maxlength)}</p>
-      <a class="film-card__comments">${comment.length} comments</a>
+      <p class="film-card__description">${getTruncatedText(description, MAX_LENGTH)}</p>
+      <a class="film-card__comments">${comments.length} comments</a>
       <div class="film-card__controls">
-        <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${isWatchlist ? 'film-card__controls-item--active' : ''}" type="button">Add to watchlist</button>
-        <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${isWatched ? 'film-card__controls-item--active' : ''}" type="button">Mark as watched</button>
-        <button class="film-card__controls-item button film-card__controls-item--favorite ${isFavorite ? 'film-card__controls-item--active' : ''}" type="button">Mark as favorite</button>
+        ${createControlTemplate('add-to-watchlist', 'Add to watchlist', isWatchlist)}
+        ${createControlTemplate('mark-as-watched', 'Mark as watched', isWatched)}
+        ${createControlTemplate('favorite', 'Mark as favorite', isFavorite)}
       </div>
     </article>`
   );

@@ -1,8 +1,15 @@
-import { getTimeFromMins, MONTHS }  from '../../mock/utils.js';
+import { getTimeFromMins, MONTHS }  from '../../utils.js';
 
 const createGenreSpan = (genres) => {
   return `<span class="film-details__genre">${genres}</span>`;
 };
+
+const createDetailsRowTemplate = (term, cell) => (
+  `<tr class="film-details__row">
+    <td class="film-details__term">${term}</td>
+    <td class="film-details__cell">${cell}</td>
+    </tr>`
+);
 
 const createTableTemplate = (film) => {
   const {
@@ -25,13 +32,6 @@ const createTableTemplate = (film) => {
   const genreList = genres.map((genres) => createGenreSpan(genres)).join('');
 
   const month = MONTHS[date.getMonth()];
-
-  const createDetailsRowTemplate = (term, cell) => (
-    `<tr class="film-details__row">
-      <td class="film-details__term">${term}</td>
-      <td class="film-details__cell">${cell}</td>
-      </tr>`
-  );
 
   return (
     `<div class="film-details__info-wrap">

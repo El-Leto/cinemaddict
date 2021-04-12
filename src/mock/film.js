@@ -1,4 +1,4 @@
-import { getRandomInteger, getRandomFixed, getRandomArrayElement, getNewArray, getShuffledArray }  from './utils.js';
+import { getRandomInteger, getRandomFixed, getRandomArrayElement, getNewArray, getShuffledArray }  from '../utils.js';
 import { generateComment } from './comment.js';
 
 const TITLES = [
@@ -152,7 +152,7 @@ export const generateFilm = () => {
     isWatchlist: Boolean(getRandomInteger(0, 1)),
     isWatched: Boolean(getRandomInteger(0, 1)),
     isFavorite: Boolean(getRandomInteger(0, 1)),
-    comment: new Array(getRandomInteger(0, 5)).fill().map(() => generateComment()),
+    comments: new Array(getRandomInteger(0, 5)).fill().map(() => generateComment()),
   };
 };
 
