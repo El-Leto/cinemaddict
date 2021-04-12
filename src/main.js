@@ -9,13 +9,6 @@ import { createTopRatedFilmsListTemplate } from './view/top-rated-films-list.js'
 import { createMostCommentedFilmsListTemplate } from './view/most-commented-films-list.js';
 import { createStatisticsTemplate } from './view/statistics.js';
 import { createPopupTemplate } from './view/film-details.js';
-import { createButtonCloseTemplate } from './view/film-details-button-close.js';
-import { createInfoWrapTemplate } from './view/film-details-info-wrap.js';
-import { createPosterTemplate } from './view/film-details-poster.js';
-import { createInfoTemplate } from './view/film-details-info.js';
-import { createControlsTemplate } from './view/film-details-controls.js';
-import { createCommentsListTemplate } from './view/comments-list.js';
-import { createNewCommentTemplate } from './view/new-comment.js';
 import { generateFilm } from './mock/film.js';
 import { generateFilter } from './mock/filter.js';
 
@@ -34,6 +27,8 @@ const InsertPosition = {
 
 const films = new Array(MAX_FILM_COUNT).fill().map(generateFilm);
 const filters = generateFilter(films);
+
+console.log(films);
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -102,24 +97,8 @@ for (let i = 0; i < FilmCount.EXTRA; i++) {
 
 const statistics = document.querySelector('.footer__statistics');
 
-render(statistics, createStatisticsTemplate(), InsertPosition.BEFORE_END);
+render(statistics, createStatisticsTemplate(MAX_FILM_COUNT), InsertPosition.BEFORE_END);
 
 const footer = document.querySelector('.footer');
 
-render(footer, createPopupTemplate(), InsertPosition.AFTER_END);
-
-const popupTopContainer = document.querySelector('.film-details__top-container');
-
-render(popupTopContainer, createButtonCloseTemplate(), InsertPosition.BEFORE_END);
-render(popupTopContainer, createInfoWrapTemplate(), InsertPosition.BEFORE_END);
-
-const popupInfoWrap = popupTopContainer.querySelector('.film-details__info-wrap');
-
-render(popupInfoWrap, createPosterTemplate(films[0]), InsertPosition.BEFORE_END);
-render(popupInfoWrap, createInfoTemplate(films[0]), InsertPosition.BEFORE_END);
-render(popupTopContainer, createControlsTemplate(), InsertPosition.BEFORE_END);
-
-const popupCommentsWrap = document.querySelector('.film-details__comments-wrap');
-
-render(popupCommentsWrap, createCommentsListTemplate(), InsertPosition.BEFORE_END);
-render(popupCommentsWrap, createNewCommentTemplate(), InsertPosition.BEFORE_END);
+render(footer, createPopupTemplate(films[0]), InsertPosition.AFTER_END);

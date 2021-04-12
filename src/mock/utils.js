@@ -29,6 +29,15 @@ const getNewArray = (array, randomNumber) => {
   return Array.from(newArray);
 };
 
+const getShuffledArray = (arr) => {
+  const newArr = arr.slice();
+  for (let i = newArr.length - 1; i > 0; i--) {
+    const rand = Math.floor(Math.random() * (i + 1));
+    [newArr[i], newArr[rand]] = [newArr[rand], newArr[i]];
+  }
+  return newArr;
+};
+
 const getTimeFromMins = (mins) => {
   const hours = Math.trunc(mins/60);
   const minutes = mins % 60;
@@ -39,4 +48,19 @@ const getTimeFromMins = (mins) => {
   }
 };
 
-export { getRandomInteger, getRandomFixed, getRandomArrayElement, getNewArray, getTimeFromMins };
+const MONTHS = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
+export { getRandomInteger, getRandomFixed, getRandomArrayElement, getNewArray, getTimeFromMins, MONTHS, getShuffledArray };

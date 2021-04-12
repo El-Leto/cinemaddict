@@ -1,5 +1,4 @@
-import dayjs from 'dayjs';
-import { getRandomInteger, getRandomFixed, getRandomArrayElement, getNewArray, getTimeFromMins  }  from './utils.js';
+import { getRandomInteger, getRandomFixed, getRandomArrayElement, getNewArray, getShuffledArray }  from './utils.js';
 import { generateComment } from './comment.js';
 
 const TITLES = [
@@ -35,7 +34,7 @@ const DESCRIPTIONS = [
 ];
 
 const AGE_RATING = [
-  '0',
+  '0+',
   '6+',
   '12+',
   '16+',
@@ -100,37 +99,38 @@ let movieId = 0;
 
 const generateText = () => {
   const textRandom = getRandomInteger(1, 5);
-  const array = getNewArray(DESCRIPTIONS, textRandom);
+  const newArray = getNewArray(DESCRIPTIONS, textRandom);
+  const array = getShuffledArray(newArray);
   return array.join(' ');
 };
 
 const generateWriters = () => {
   const writersRandom = getRandomInteger(1, 3);
-  const array = getNewArray(WRITERS, writersRandom);
-  return array.join(', ');
+  const newArray = getNewArray(WRITERS, writersRandom);
+  const array = getShuffledArray(newArray);
+  return array;
 };
 
 const generateActors = () => {
   const actorsRandom = getRandomInteger(1, 3);
-  const array = getNewArray(ACTORS, actorsRandom);
-  return array.join(', ');
+  const newArray = getNewArray(ACTORS, actorsRandom);
+  const array = getShuffledArray(newArray);
+  return array;
 };
 
 const generateGenres = () => {
   const genresRandom = getRandomInteger(1, 3);
-  const array = getNewArray(GENRES, genresRandom);
-  return array.join(', ');
+  const newArray = getNewArray(GENRES, genresRandom);
+  const array = getShuffledArray(newArray);
+  return array;
 };
 
 const getDateCreate = () => {
   const year = getRandomInteger(0, 100);
   const month = getRandomInteger(0, 12);
   const day = getRandomInteger(0, 31);
-
-  return dayjs()
-    .subtract(year, 'year')
-    .subtract(month, 'month')
-    .subtract(day,'day');
+  const data = new Date(year, month, day);
+  return data;
 };
 
 export const generateFilm = () => {
@@ -140,15 +140,15 @@ export const generateFilm = () => {
     alternativeTitle: getRandomArrayElement(TITLES),
     poster: getRandomArrayElement(POSTERS),
     description: generateText(),
-    totalRating: getRandomFixed(1, 10, 1),
+    totalRating: Number(getRandomFixed(1, 10, 1)),
     ageRating: getRandomArrayElement(AGE_RATING),
     director: getRandomArrayElement(DIRECTORS),
     writers: generateWriters(),
     actors: generateActors(),
-    dateCreate: getDateCreate(),
+    date: getDateCreate(),
     country: getRandomArrayElement(COUNTRIES),
-    runtime: getTimeFromMins(getRandomInteger(1, 180)),
-    genre: generateGenres(),
+    runtime: Number(getRandomInteger(1, 180)),
+    genres: generateGenres(),
     isWatchlist: Boolean(getRandomInteger(0, 1)),
     isWatched: Boolean(getRandomInteger(0, 1)),
     isFavorite: Boolean(getRandomInteger(0, 1)),

@@ -2,7 +2,7 @@ const createSiteNavigationItemTemplate = (filter) => {
   const {name, count} = filter;
 
   return (
-    `<a href="#${name}" class="main-navigation__item">Watchlist <span class="main-navigation__item-count">${count}</span></a>`
+    `<a href="#${name}" class="main-navigation__item">${name[0].toUpperCase()}${name.slice(1)} <span class="main-navigation__item-count">${count}</span></a>`
   );
 };
 
