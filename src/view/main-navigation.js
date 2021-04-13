@@ -1,4 +1,4 @@
-import { getСapitalLetter }  from '../utils.js';
+import { getСapitalLetter }  from '../utils/common.js';
 
 const createMainNavigationItemTemplate = (filter) => {
   const {name, count} = filter;
@@ -8,8 +8,8 @@ const createMainNavigationItemTemplate = (filter) => {
   );
 };
 
-export const createMainNavigationTemplate = (mainNavigationItems) => {
-  const filterItemsTemplate = mainNavigationItems
+export const createMainNavigationTemplate = (items) => {
+  const filterItemsTemplate = items
     .map((filter, index) => createMainNavigationItemTemplate(filter, index === 0))
     .join('');
 
