@@ -1,16 +1,18 @@
-import { createButtonCloseTemplate, createTableTemplate, createControlsTemplate, createCommentListTemplate } from './film-details/index.js';
+import TableView from './film-details/table.js';
+import { createButtonCloseTemplate, createControlsTemplate, createCommentListTemplate } from './film-details/index.js';
+import { createElement } from '../utils.js';
 
-export const createPopupTemplate = (film) => {
+const createPopupTemplate = (film) => {
   const {
     comments,
   } = film;
 
   return (
-    `<section class="film-details">
+    `<section class="film-details visually-hidden">
       <form class="film-details__inner" action="" method="get">
         <div class="film-details__top-container">
           ${createButtonCloseTemplate()}
-          ${createTableTemplate(film)}
+          ${new TableView(film).getElement()}
           ${createControlsTemplate(film)}
         </div>
         <div class="film-details__bottom-container">
@@ -23,3 +25,26 @@ export const createPopupTemplate = (film) => {
     </section>`
   );
 };
+
+export default class Popup {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPopupTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

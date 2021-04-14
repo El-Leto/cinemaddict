@@ -1,5 +1,6 @@
 import { truncateText }  from '../utils/common.js';
 import { getTimeFromMins }  from '../utils/data.js';
+import { createElement } from '../utils.js';
 
 const MAX_DESCRIPTION_LENGTH = 140;
 
@@ -14,7 +15,7 @@ const createControlButtonTemplate = (name, title, isActive = false) => {
   );
 };
 
-export const createFilmCardTemplate = (film) => {
+const createFilmCardTemplate = (film) => {
   const {
     title,
     totalRating,
@@ -49,3 +50,26 @@ export const createFilmCardTemplate = (film) => {
     </article>`
   );
 };
+
+export default class FilmCard {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmCardTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
