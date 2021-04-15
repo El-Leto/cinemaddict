@@ -1,5 +1,4 @@
-import TableView from './film-details/table.js';
-import { createButtonCloseTemplate, createControlsTemplate, createCommentListTemplate } from './film-details/index.js';
+import { createButtonCloseTemplate, createTableTemplate, createControlsTemplate, createCommentListTemplate } from './film-details/index.js';
 import { createElement } from '../utils.js';
 
 const createPopupTemplate = (film) => {
@@ -8,11 +7,11 @@ const createPopupTemplate = (film) => {
   } = film;
 
   return (
-    `<section class="film-details visually-hidden">
+    `<section class="film-details">
       <form class="film-details__inner" action="" method="get">
         <div class="film-details__top-container">
           ${createButtonCloseTemplate()}
-          ${new TableView(film).getElement()}
+          ${createTableTemplate(film)}
           ${createControlsTemplate(film)}
         </div>
         <div class="film-details__bottom-container">

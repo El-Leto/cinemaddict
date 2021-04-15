@@ -1,5 +1,4 @@
 import { getTimeFromMins, formatReleaseDate }  from '../../utils/data.js';
-import { createElement } from '../../utils.js';
 
 const createGenreSpan = (genres) => {
   return `<span class="film-details__genre">${genres}</span>`;
@@ -12,7 +11,7 @@ const createDetailsRowTemplate = (term, cell) => (
     </tr>`
 );
 
-const createTableTemplate = (film) => {
+export const createTableTemplate = (film) => {
   const {
     poster,
     title,
@@ -62,26 +61,3 @@ const createTableTemplate = (film) => {
     </div>`
   );
 };
-
-export default class Table {
-  constructor(film) {
-    this._film = film;
-    this._element = null;
-  }
-
-  getTemplate() {
-    return createTableTemplate(this._film);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
-}

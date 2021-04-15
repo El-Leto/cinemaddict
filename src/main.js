@@ -2,6 +2,7 @@ import MainNavigationView from './view/main-navigation.js';
 import SiteSortView from './view/site-sort.js';
 import MainContentView from './view/main-content.js';
 import AllFilmsView from './view/all-films.js';
+import AllFilmsListView from './view/all-films-list.js';
 import FilmCardView from './view/film-card.js';
 import ProfileView from './view/profile.js';
 import ShowMoreButtonView from './view/show-more-button.js';
@@ -24,7 +25,28 @@ const FilmCount = {
 const films = new Array(MAX_FILM_COUNT).fill().map(generateFilm);
 const filters = generateFilter(films);
 
+const body = document.querySelector('body');
 const siteMain = document.querySelector('.main');
+
+const renderFilmCard = (container, films) => {
+  const filmCardElement = new FilmCardView(films).getElement();
+  const popupElement = new PopupView(films).getElement();
+
+  const showPopup = () => {
+    popupElement.querySelector('.film-details__close-btn').addEventListener('click', () =>{
+      body.removeChild(popupElement);
+      body.classList.remove('hide-overflow');
+    });
+    body.classList.add('hide-overflow');
+    body.appendChild(popupElement);
+  };
+
+  filmCardElement.querySelector('.film-card__poster').addEventListener('click', showPopup);
+  filmCardElement.querySelector('.film-card__title').addEventListener('click', showPopup);
+  filmCardElement.querySelector('.film-card__comments').addEventListener('click', showPopup);
+
+  render(container, filmCardElement, InsertPosition.BEFORE_END);
+};
 
 render(siteMain, new MainNavigationView(filters).getElement(), InsertPosition.BEFORE_END);
 render(siteMain, new SiteSortView().getElement(), InsertPosition.BEFORE_END);
@@ -32,32 +54,35 @@ render(siteMain, new SiteSortView().getElement(), InsertPosition.BEFORE_END);
 const mainContent = new MainContentView();
 
 render(siteMain, mainContent.getElement(), InsertPosition.BEFORE_END);
-render(mainContent.getElement(), new AllFilmsView().getElement(), InsertPosition.BEFORE_END);
 
-const allFilmsList = mainContent.getElement().querySelector('.films-list__container');
+const allFilms = new AllFilmsView();
 
-for (let i = 0; i < Math.min(films.length, FILM_COUNT_PER_STEP); i++) {
-  render(allFilmsList, new FilmCardView(films[i]).getElement(), InsertPosition.BEFORE_END);
-}
+render(mainContent.getElement(), allFilms.getElement(), InsertPosition.BEFORE_END);
+
+const allFilmsList = new AllFilmsListView();
+
+render(allFilms.getElement(), allFilmsList.getElement(), InsertPosition.BEFORE_END);
+
+films
+  .slice(0, FILM_COUNT_PER_STEP)
+  .forEach((films) => renderFilmCard(allFilmsList.getElement(), films));
 
 const header = document.querySelector('.header');
 
 render(header, new ProfileView().getElement(), InsertPosition.BEFORE_END);
-
-const allFilms = mainContent.getElement().querySelector('.films-list');
 
 if (films.length > FILM_COUNT_PER_STEP) {
   let renderedFIlmCount = FILM_COUNT_PER_STEP;
 
   const showMoreButton = new ShowMoreButtonView();
 
-  render(allFilms, showMoreButton.getElement(), InsertPosition.BEFORE_END);
+  render(allFilms.getElement(), showMoreButton.getElement(), InsertPosition.BEFORE_END);
 
   showMoreButton.getElement().addEventListener('click', (evt) => {
     evt.preventDefault();
     films
       .slice(renderedFIlmCount, renderedFIlmCount + FILM_COUNT_PER_STEP)
-      .forEach((film) => render(allFilmsList, new FilmCardView(film).getElement(), InsertPosition.BEFORE_END));
+      .forEach((film) => render(allFilmsList.getElement(), new FilmCardView(film).getElement(), InsertPosition.BEFORE_END));
 
     renderedFIlmCount += FILM_COUNT_PER_STEP;
 
@@ -88,7 +113,3 @@ for (let i = 0; i < FilmCount.EXTRA; i++) {
 const statistics = document.querySelector('.footer__statistics');
 
 render(statistics, new StatisticsView(MAX_FILM_COUNT).getElement(), InsertPosition.BEFORE_END);
-
-const footer = document.querySelector('.footer');
-
-render(footer, new PopupView(films[0]).getElement(), InsertPosition.AFTER_END);
