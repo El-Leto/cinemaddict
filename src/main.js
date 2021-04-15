@@ -9,7 +9,7 @@ import ShowMoreButtonView from './view/show-more-button.js';
 import TopRatedFilmsListView from './view/top-rated-films-list.js';
 import MostCommentedFilmsListView from './view/most-commented-films-list.js';
 import StatisticsView from './view/statistics.js';
-import PopupView from './view/film-details.js';
+import PopupView from './view/popup.js';
 import { generateFilm } from './mock/film.js';
 import { generateFilter } from './mock/filter.js';
 import { InsertPosition, render } from './utils.js';
@@ -25,27 +25,36 @@ const FilmCount = {
 const films = new Array(MAX_FILM_COUNT).fill().map(generateFilm);
 const filters = generateFilter(films);
 
-const body = document.querySelector('body');
+const body = document.body;
 const siteMain = document.querySelector('.main');
 
 const renderFilmCard = (container, films) => {
-  const filmCardElement = new FilmCardView(films).getElement();
-  const popupElement = new PopupView(films).getElement();
+  const filmCard = new FilmCardView(films).getElement();
+  const popup = new PopupView(films);
 
   const showPopup = () => {
-    popupElement.querySelector('.film-details__close-btn').addEventListener('click', () =>{
-      body.removeChild(popupElement);
+    body.classList.add('hide-overflow');
+    body.appendChild(popup.getElement());
+
+    const buttonClose = document.querySelector('.film-details__close-btn');
+
+    buttonClose.addEventListener('click', () =>{
+      body.removeChild(popup.getElement());
+      popup.removeElement();
       body.classList.remove('hide-overflow');
     });
-    body.classList.add('hide-overflow');
-    body.appendChild(popupElement);
   };
 
-  filmCardElement.querySelector('.film-card__poster').addEventListener('click', showPopup);
-  filmCardElement.querySelector('.film-card__title').addEventListener('click', showPopup);
-  filmCardElement.querySelector('.film-card__comments').addEventListener('click', showPopup);
 
-  render(container, filmCardElement, InsertPosition.BEFORE_END);
+  const onFilmCardClick = () => {
+    filmCard.querySelector('.film-card__poster').addEventListener('click', showPopup);
+    filmCard.querySelector('.film-card__title').addEventListener('click', showPopup);
+    filmCard.querySelector('.film-card__comments').addEventListener('click', showPopup);
+  };
+
+  onFilmCardClick();
+
+  render(container, filmCard, InsertPosition.BEFORE_END);
 };
 
 render(siteMain, new MainNavigationView(filters).getElement(), InsertPosition.BEFORE_END);
@@ -88,6 +97,7 @@ if (films.length > FILM_COUNT_PER_STEP) {
 
     if (renderedFIlmCount >= films.length) {
       showMoreButton.getElement().remove();
+      showMoreButton.removeElement();
     }
   });
 }

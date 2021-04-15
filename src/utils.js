@@ -15,10 +15,10 @@ const render = (container, element, place) => {
 };
 
 const createElement = (template) => {
-  const newElement = document.createElement('div'); // 1
-  newElement.innerHTML = template; // 2
+  const wrapper = document.createElement('div');
+  wrapper.innerHTML = template;
 
-  return newElement.firstChild; // 3
+  return wrapper.firstChild;
 };
 
 export { InsertPosition, render, createElement };
