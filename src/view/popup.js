@@ -1,5 +1,5 @@
-import { createButtonCloseTemplate, createTableTemplate, createControlsTemplate, createCommentListTemplate } from './film-details/index.js';
-import { createElement } from '../utils.js';
+import { createButtonCloseTemplate, createTableTemplate, createControlsTemplate, createCommentListTemplate } from './popup/index.js';
+import { createElement } from '../render.js';
 
 const createPopupTemplate = (film) => {
   const {

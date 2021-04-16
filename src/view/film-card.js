@@ -1,6 +1,6 @@
 import { truncateText }  from '../utils/common.js';
 import { getTimeFromMins }  from '../utils/data.js';
-import { createElement } from '../utils.js';
+import { createElement } from '../render.js';
 
 const MAX_DESCRIPTION_LENGTH = 140;
 

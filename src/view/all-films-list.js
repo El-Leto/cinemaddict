@@ -1,4 +1,4 @@
-import { createElement } from '../utils.js';
+import { createElement } from '../render.js';
 
 const createAllFilmsListTemplate = () => {
   return (

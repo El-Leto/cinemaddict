@@ -12,7 +12,7 @@ import StatisticsView from './view/statistics.js';
 import PopupView from './view/popup.js';
 import { generateFilm } from './mock/film.js';
 import { generateFilter } from './mock/filter.js';
-import { InsertPosition, render } from './utils.js';
+import { InsertPosition, render } from './render.js';
 
 const MAX_FILM_COUNT = 20;
 const FILM_COUNT_PER_STEP = 5;
@@ -25,36 +25,34 @@ const FilmCount = {
 const films = new Array(MAX_FILM_COUNT).fill().map(generateFilm);
 const filters = generateFilter(films);
 
-const body = document.body;
 const siteMain = document.querySelector('.main');
 
 const renderFilmCard = (container, films) => {
-  const filmCard = new FilmCardView(films).getElement();
-  const popup = new PopupView(films);
+  const filmCardView = new FilmCardView(films).getElement();
+  const popupView = new PopupView(films);
 
   const showPopup = () => {
-    body.classList.add('hide-overflow');
-    body.appendChild(popup.getElement());
+    document.body.classList.add('hide-overflow');
+    document.body.appendChild(popupView.getElement());
 
     const buttonClose = document.querySelector('.film-details__close-btn');
 
     buttonClose.addEventListener('click', () =>{
-      body.removeChild(popup.getElement());
-      popup.removeElement();
-      body.classList.remove('hide-overflow');
+      document.body.removeChild(popupView.getElement());
+      popupView.removeElement();
+      document.body.classList.remove('hide-overflow');
     });
   };
 
-
   const onFilmCardClick = () => {
-    filmCard.querySelector('.film-card__poster').addEventListener('click', showPopup);
-    filmCard.querySelector('.film-card__title').addEventListener('click', showPopup);
-    filmCard.querySelector('.film-card__comments').addEventListener('click', showPopup);
+    showPopup();
   };
 
-  onFilmCardClick();
+  filmCardView.querySelector('.film-card__poster').addEventListener('click', onFilmCardClick);
+  filmCardView.querySelector('.film-card__title').addEventListener('click', onFilmCardClick);
+  filmCardView.querySelector('.film-card__comments').addEventListener('click', onFilmCardClick);
 
-  render(container, filmCard, InsertPosition.BEFORE_END);
+  render(container, filmCardView, InsertPosition.BEFORE_END);
 };
 
 render(siteMain, new MainNavigationView(filters).getElement(), InsertPosition.BEFORE_END);

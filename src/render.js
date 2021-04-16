@@ -11,6 +11,8 @@ const render = (container, element, place) => {
     case InsertPosition.BEFORE_END:
       container.append(element);
       break;
+    default:
+      throw new Error('Unknown insert position selected');
   }
 };
 

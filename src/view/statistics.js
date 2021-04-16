@@ -1,4 +1,4 @@
-import { createElement } from '../utils.js';
+import { createElement } from '../render.js';
 
 const createStatisticsTemplate = (filmCount) => {
   return `<p>${filmCount} movies inside</p>`;
