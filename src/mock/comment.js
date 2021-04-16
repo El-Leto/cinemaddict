@@ -1,13 +1,7 @@
 import dayjs from 'dayjs';
 import { generateText } from './film.js';
-import { getRandomArrayElement, getRandomInteger }  from '../utils.js';
-
-const EMOJI = [
-  'smile',
-  'sleeping',
-  'puke',
-  'angry',
-];
+import { getRandomArrayElement, getRandomInteger }  from './random.js';
+import { EMOJIS }  from '../const.js';
 
 const AUTHORS = [
   'Ivan',
@@ -25,9 +19,9 @@ const generateComment = () => {
   return {
     id: commentId++,
     author: getRandomArrayElement(AUTHORS),
-    comment: generateText(),
+    text: generateText(),
     date: dataComment,
-    emotion: getRandomArrayElement(EMOJI),
+    emoji: getRandomArrayElement(EMOJIS),
   };
 };
 

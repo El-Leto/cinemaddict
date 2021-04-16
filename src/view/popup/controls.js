@@ -1,6 +1,12 @@
-const createControlTemplate = (id, text, value) => (
-  `<input type="checkbox" ${value ? 'checked' : ''} class="film-details__control-input visually-hidden" id="${id}" name="${id}">
-    <label for="${id}" class="film-details__control-label film-details__control-label--${id}">${text}</label>`
+const createControlTemplate = (name, title, isChecked = false) => (
+  `<input
+    class="film-details__control-input visually-hidden"
+    id="${name}"
+    name="${name}"
+    type="checkbox"
+    ${isChecked ? 'checked' : ''}
+   >
+   <label for="${name}" class="film-details__control-label film-details__control-label--${name}">${title}</label>`
 );
 
 const createControlsTemplate = (film) => {

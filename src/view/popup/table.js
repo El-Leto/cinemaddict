@@ -1,4 +1,4 @@
-import { getTimeFromMins, MONTHS }  from '../../utils.js';
+import { getTimeFromMins, formatReleaseDate }  from '../../utils/data.js';
 
 const createGenreSpan = (genres) => {
   return `<span class="film-details__genre">${genres}</span>`;
@@ -11,7 +11,7 @@ const createDetailsRowTemplate = (term, cell) => (
     </tr>`
 );
 
-const createTableTemplate = (film) => {
+export const createTableTemplate = (film) => {
   const {
     poster,
     title,
@@ -30,8 +30,6 @@ const createTableTemplate = (film) => {
   const genreTitle = genres.length > 1 ? 'Genres': 'Genre';
 
   const genreList = genres.map((genres) => createGenreSpan(genres)).join('');
-
-  const month = MONTHS[date.getMonth()];
 
   return (
     `<div class="film-details__info-wrap">
@@ -53,7 +51,7 @@ const createTableTemplate = (film) => {
           ${createDetailsRowTemplate('Director', director)}
           ${createDetailsRowTemplate('Writers', writers.join(', '))}
           ${createDetailsRowTemplate('Actors', actors.join(', '))}
-          ${createDetailsRowTemplate('Release Date', date.getDate() + ' ' + month + ' ' + date.getFullYear())}
+          ${createDetailsRowTemplate('Release Date', formatReleaseDate(date))}
           ${createDetailsRowTemplate('Runtime', getTimeFromMins(runtime))}
           ${createDetailsRowTemplate('Country', country)}
           ${createDetailsRowTemplate(genreTitle, genreList)}
@@ -63,5 +61,3 @@ const createTableTemplate = (film) => {
     </div>`
   );
 };
-
-export { createTableTemplate };

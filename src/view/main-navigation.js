@@ -1,4 +1,5 @@
-import { getСapitalLetter }  from '../utils.js';
+import { getСapitalLetter }  from '../utils/common.js';
+import { createElement } from '../render.js';
 
 const createMainNavigationItemTemplate = (filter) => {
   const {name, count} = filter;
@@ -8,8 +9,8 @@ const createMainNavigationItemTemplate = (filter) => {
   );
 };
 
-export const createMainNavigationTemplate = (mainNavigationItems) => {
-  const filterItemsTemplate = mainNavigationItems
+const createMainNavigationTemplate = (items) => {
+  const filterItemsTemplate = items
     .map((filter, index) => createMainNavigationItemTemplate(filter, index === 0))
     .join('');
 
@@ -23,3 +24,26 @@ export const createMainNavigationTemplate = (mainNavigationItems) => {
     </nav>`
   );
 };
+
+export default class MainNavigation {
+  constructor(filters) {
+    this._filters = filters;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createMainNavigationTemplate(this._filters);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

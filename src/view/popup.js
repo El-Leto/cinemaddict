@@ -1,12 +1,13 @@
-import { createButtonCloseTemplate, createTableTemplate, createControlsTemplate, createCommentListTemplate } from './film-details/index.js';
+import { createButtonCloseTemplate, createTableTemplate, createControlsTemplate, createCommentListTemplate } from './popup/index.js';
+import { createElement } from '../render.js';
 
-export const createPopupTemplate = (film) => {
+const createPopupTemplate = (film) => {
   const {
     comments,
   } = film;
 
   return (
-    `<section class="film-details visually-hidden">
+    `<section class="film-details">
       <form class="film-details__inner" action="" method="get">
         <div class="film-details__top-container">
           ${createButtonCloseTemplate()}
@@ -23,3 +24,26 @@ export const createPopupTemplate = (film) => {
     </section>`
   );
 };
+
+export default class Popup {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPopupTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -1,12 +1,21 @@
-import { getTimeFromMins, getTruncatedText }  from '../utils.js';
+import { truncateText }  from '../utils/common.js';
+import { getTimeFromMins }  from '../utils/data.js';
+import { createElement } from '../render.js';
 
-const MAX_LENGTH = 140;
+const MAX_DESCRIPTION_LENGTH = 140;
 
-const createControlTemplate = (className, text, value) => (
-  `<button class="film-card__controls-item button film-card__controls-item--${className} ${value ? 'film-card__controls-item--active' : ''}" type="button">${text}</button>`
-);
+const GENRE_MAIN = 0;
 
-export const createFilmCardTemplate = (film) => {
+const createControlButtonTemplate = (name, title, isActive = false) => {
+  const activeClass = isActive ? 'film-card__controls-item--active' : '';
+  return (
+    `<button class="film-card__controls-item button film-card__controls-item--${name} ${activeClass}">
+      ${title}
+    </button>`
+  );
+};
+
+const createFilmCardTemplate = (film) => {
   const {
     title,
     totalRating,
@@ -28,16 +37,39 @@ export const createFilmCardTemplate = (film) => {
       <p class="film-card__info">
         <span class="film-card__year">${date.getFullYear()}</span>
         <span class="film-card__duration">${getTimeFromMins(runtime)}</span>
-        <span class="film-card__genre">${genres[0]}</span>
+        <span class="film-card__genre">${genres[GENRE_MAIN]}</span>
       </p>
       <img src="${poster}" alt="" class="film-card__poster">
-      <p class="film-card__description">${getTruncatedText(description, MAX_LENGTH)}</p>
+      <p class="film-card__description">${truncateText(description, MAX_DESCRIPTION_LENGTH)}</p>
       <a class="film-card__comments">${comments.length} comments</a>
       <div class="film-card__controls">
-        ${createControlTemplate('add-to-watchlist', 'Add to watchlist', isWatchlist)}
-        ${createControlTemplate('mark-as-watched', 'Mark as watched', isWatched)}
-        ${createControlTemplate('favorite', 'Mark as favorite', isFavorite)}
+        ${createControlButtonTemplate('add-to-watchlist', 'Add to watchlist', isWatchlist)}
+        ${createControlButtonTemplate('mark-as-watched', 'Mark as watched', isWatched)}
+        ${createControlButtonTemplate('favorite', 'Mark as favorite', isFavorite)}
       </div>
     </article>`
   );
 };
+
+export default class FilmCard {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmCardTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
