@@ -20,8 +20,8 @@ const createCommentTemplate = (comment) => {
   );
 };
 
-const createEmojiTemplate = (emoji) => (
-  `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}">
+const createEmojiTemplate = (emoji, isChecked = true) => (
+  `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}" ${isChecked ? '' : 'checked'}>
   <label class="film-details__emoji-label" for="emoji-${emoji}">
     <img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji">
   </label>`

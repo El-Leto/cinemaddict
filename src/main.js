@@ -31,7 +31,7 @@ const renderFilmCard = (container, films) => {
   const filmCardView = new FilmCardView(films).getElement();
   const popupView = new PopupView(films);
 
-  const showPopup = () => {
+  const filmCardClickHandler = () => {
     document.body.classList.add('hide-overflow');
     document.body.appendChild(popupView.getElement());
 
@@ -44,13 +44,9 @@ const renderFilmCard = (container, films) => {
     });
   };
 
-  const onFilmCardClick = () => {
-    showPopup();
-  };
-
-  filmCardView.querySelector('.film-card__poster').addEventListener('click', onFilmCardClick);
-  filmCardView.querySelector('.film-card__title').addEventListener('click', onFilmCardClick);
-  filmCardView.querySelector('.film-card__comments').addEventListener('click', onFilmCardClick);
+  filmCardView.querySelector('.film-card__poster').addEventListener('click', filmCardClickHandler);
+  filmCardView.querySelector('.film-card__title').addEventListener('click', filmCardClickHandler);
+  filmCardView.querySelector('.film-card__comments').addEventListener('click', filmCardClickHandler);
 
   render(container, filmCardView, InsertPosition.BEFORE_END);
 };
