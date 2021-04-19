@@ -1,5 +1,5 @@
 import { getСapitalLetter }  from '../utils/common.js';
-import { createElement } from '../render.js';
+import AbstractView from './abstract.js';
 
 const createMainNavigationItemTemplate = (filter) => {
   const {name, count} = filter;
@@ -25,25 +25,13 @@ const createMainNavigationTemplate = (items) => {
   );
 };
 
-export default class MainNavigation {
+export default class MainNavigation extends AbstractView {
   constructor(filters) {
+    super();
     this._filters = filters;
-    this._element = null;
   }
 
   getTemplate() {
     return createMainNavigationTemplate(this._filters);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
