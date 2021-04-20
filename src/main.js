@@ -32,18 +32,17 @@ const renderFilmCard = (container, films) => {
   const filmCardView = new FilmCardView(films);
   const popupView = new PopupView(films);
 
-  const filmCardClickHandler = () => {
+  const handleFilmCardClick = () => {
     document.body.classList.add('hide-overflow');
     document.body.appendChild(popupView.getElement());
 
-    const buttonEscKeydownHandler = (evt) => {
+    const handleButtonEscKeydown = (evt) => {
       if (evt.key === 'Escape' || evt.key === 'Esc') {
         evt.preventDefault();
         document.body.removeChild(popupView.getElement());
         popupView.removeElement();
         document.body.classList.remove('hide-overflow');
-        document.removeEventListener('keydown', buttonEscKeydownHandler);
-        return;
+        document.removeEventListener('keydown', handleButtonEscKeydown);
       }
     };
 
@@ -53,15 +52,15 @@ const renderFilmCard = (container, films) => {
       document.body.removeChild(popupView.getElement());
       popupView.removeElement();
       document.body.classList.remove('hide-overflow');
-      document.removeEventListener('keydown', buttonEscKeydownHandler);
+      document.removeEventListener('keydown', handleButtonEscKeydown);
     });
 
-    document.addEventListener('keydown', buttonEscKeydownHandler);
+    document.addEventListener('keydown', handleButtonEscKeydown);
   };
 
-  filmCardView.setFilmCardClickHandler(filmCardClickHandler);
-  filmCardView.setFilmCardClickHandler(filmCardClickHandler);
-  filmCardView.setFilmCardClickHandler(filmCardClickHandler);
+  filmCardView.setPosterClickHandler(handleFilmCardClick);
+  filmCardView.setTitleClickHandler(handleFilmCardClick);
+  filmCardView.setCommentsClickHandler(handleFilmCardClick);
 
   render(container, filmCardView.getElement(), InsertPosition.BEFORE_END);
 };
@@ -102,7 +101,7 @@ const renderFilmList = () => {
 
     render(allFilms.getElement(), showMoreButton.getElement(), InsertPosition.BEFORE_END);
 
-    showMoreButton.setShowMoreClickHandler(() => {
+    showMoreButton.setClickHandler(() => {
       films
         .slice(renderedFIlmCount, renderedFIlmCount + FILM_COUNT_PER_STEP)
         .forEach((film) => render(allFilmsList.getElement(), new FilmCardView(film).getElement(), InsertPosition.BEFORE_END));
