@@ -7,6 +7,7 @@ import FilmCardView from '../view/film-card.js';
 import ShowMoreButtonView from '../view/show-more-button.js';
 import PopupView from '../view/popup.js';
 import NoFilmsView from '../view/no-films.js';
+//import FilmCardPresenter from './film-card.js';
 import { InsertPosition, render } from '../render.js';
 
 const FILM_COUNT_PER_STEP = 5;
@@ -14,6 +15,7 @@ const FILM_COUNT_PER_STEP = 5;
 export default class FilmList {
   constructor(filmListContainer) {
     this._filmListContainer = filmListContainer;
+    this._renderedFIlmCount = FILM_COUNT_PER_STEP;
     this._allFilmsComponent = new AllFilmsView();
     this._allFilmsListComponent = new AllFilmsListView();
     this._mainNavigationComponent = new MainNavigationView();
@@ -21,6 +23,8 @@ export default class FilmList {
     this._noFilmsComponent = new NoFilmsView();
     this._showMoreButtonComponent = new ShowMoreButtonView();
     this._MainContentComponent = new MainContentView();
+    this._showMoreButtonComponent = new ShowMoreButtonView();
+    this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
   }
 
   init(films) {
@@ -67,6 +71,9 @@ export default class FilmList {
     filmCardComponent.setCommentsClickHandler(handleFilmCardClick);
 
     render(this._allFilmsListComponent, filmCardComponent, InsertPosition.BEFORE_END);
+    // const filmCardPresenter = new FilmCardPresenter(this._allFilmsListComponent);
+    //
+    // filmCardPresenter.init(films);
   }
 
   _renderFilms(from, to) {
@@ -79,32 +86,27 @@ export default class FilmList {
     render(this._filmListContainer, this._noFilmsComponent, InsertPosition.BEFORE_END);
   }
 
-  _renderLoadMoreButton() {
-    let renderedFIlmCount = FILM_COUNT_PER_STEP;
+  _handleShowMoreButtonClick() {
+    this._renderFilms(this._renderedFIlmCount, this._renderedFIlmCount + FILM_COUNT_PER_STEP);
+    this._renderedFIlmCount += FILM_COUNT_PER_STEP;
 
-    const showMoreButtonComponent = new ShowMoreButtonView();
+    if (this._renderedFIlmCount >= this._films.length) {
+      this._showMoreButtonComponent.getElement().remove();
+      this._showMoreButtonComponent.removeElement();
+    }
+  }
 
-    render(this._allFilmsComponent, showMoreButtonComponent, InsertPosition.BEFORE_END);
+  _renderShowMoreButton() {
+    render(this._allFilmsComponent, this._showMoreButtonComponent, InsertPosition.BEFORE_END);
 
-    showMoreButtonComponent.setClickHandler(() => {
-      this._films
-        .slice(renderedFIlmCount, renderedFIlmCount + FILM_COUNT_PER_STEP)
-        .forEach((film) => this._renderFilmCard(film));
-
-      renderedFIlmCount += FILM_COUNT_PER_STEP;
-
-      if (renderedFIlmCount >= this._films.length) {
-        showMoreButtonComponent.getElement().remove();
-        showMoreButtonComponent.removeElement();
-      }
-    });
+    this._showMoreButtonComponent.setClickHandler(this._handleShowMoreButtonClick);
   }
 
   _renderFilmsList() {
     this._renderFilms(0, FILM_COUNT_PER_STEP);
 
     if (this._films.length > FILM_COUNT_PER_STEP) {
-      this._renderLoadMoreButton();
+      this._renderShowMoreButton();
     }
   }
 
