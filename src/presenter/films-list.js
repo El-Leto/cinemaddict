@@ -3,12 +3,13 @@ import MainContentView from '../view/main-content.js';
 import SiteSortView from '../view/site-sort.js';
 import AllFilmsView from '../view/all-films.js';
 import AllFilmsListView from '../view/all-films-list.js';
-import FilmCardView from '../view/film-card.js';
+//import FilmCardView from '../view/film-card.js';
 import ShowMoreButtonView from '../view/show-more-button.js';
-import PopupView from '../view/popup.js';
+//import PopupView from '../view/popup.js';
 import NoFilmsView from '../view/no-films.js';
-//import FilmCardPresenter from './film-card.js';
+import FilmCardPresenter from './film-card.js';
 import { InsertPosition, render } from '../render.js';
+import { updateItem } from '../utils/common.js';
 
 const FILM_COUNT_PER_STEP = 5;
 
@@ -24,7 +25,12 @@ export default class FilmList {
     this._showMoreButtonComponent = new ShowMoreButtonView();
     this._MainContentComponent = new MainContentView();
     this._showMoreButtonComponent = new ShowMoreButtonView();
+
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
+    this._handleFilmChange = this._handleFilmChange.bind(this);
+    this._handleModeChange = this._handleModeChange.bind(this);
+
+    this._filmCardPresenter = {};
   }
 
   init(films) {
@@ -36,44 +42,17 @@ export default class FilmList {
     this._renderFilmList();
   }
 
-  _renderFilmCard(films) {
-    const filmCardComponent = new FilmCardView(films);
-    const popupComponent = new PopupView(films);
+  _handleModeChange() {
+    Object
+      .values(this._filmCardPresenter)
+      .forEach((presenter) => presenter.resetView());
+  }
 
-    const handleFilmCardClick = () => {
-      document.body.classList.add('hide-overflow');
-      document.body.appendChild(popupComponent.getElement());
+  _renderFilmCard(film) {
+    const filmCardPresenter = new FilmCardPresenter(this._allFilmsListComponent, this._handleFilmChange, this._handleModeChange);
 
-      const buttonEscKeydownHandler = (evt) => {
-        if (evt.key === 'Escape' || evt.key === 'Esc') {
-          evt.preventDefault();
-          document.body.removeChild(popupComponent.getElement());
-          popupComponent.removeElement();
-          document.body.classList.remove('hide-overflow');
-          document.removeEventListener('keydown', buttonEscKeydownHandler);
-        }
-      };
-
-      const buttonClose = document.querySelector('.film-details__close-btn');
-
-      buttonClose.addEventListener('click', () => {
-        document.body.removeChild(popupComponent.getElement());
-        popupComponent.removeElement();
-        document.body.classList.remove('hide-overflow');
-        document.removeEventListener('keydown', buttonEscKeydownHandler);
-      });
-
-      document.addEventListener('keydown', buttonEscKeydownHandler);
-    };
-
-    filmCardComponent.setPosterClickHandler(handleFilmCardClick);
-    filmCardComponent.setTitleClickHandler(handleFilmCardClick);
-    filmCardComponent.setCommentsClickHandler(handleFilmCardClick);
-
-    render(this._allFilmsListComponent, filmCardComponent, InsertPosition.BEFORE_END);
-    // const filmCardPresenter = new FilmCardPresenter(this._allFilmsListComponent);
-    //
-    // filmCardPresenter.init(films);
+    filmCardPresenter.init(film);
+    this._filmCardPresenter[film.id] = filmCardPresenter;
   }
 
   _renderFilms(from, to) {
@@ -82,7 +61,7 @@ export default class FilmList {
       .forEach((film) => this._renderFilmCard(film));
   }
 
-  _renderNoTasks() {
+  _renderNoFilms() {
     render(this._filmListContainer, this._noFilmsComponent, InsertPosition.BEFORE_END);
   }
 
@@ -116,5 +95,20 @@ export default class FilmList {
     }
 
     this._renderFilmsList();
+  }
+
+  _clearFilmList() {
+    Object
+      .values(this._filmCardPresenter)
+      .forEach((presenter) => presenter.destroy());
+    this._filmCardPresenter = {};
+    this._renderedFIlmCount = FILM_COUNT_PER_STEP;
+    this._showMoreButtonComponent.getElement().remove();
+    this._showMoreButtonComponent.removeElement();
+  }
+
+  _handleFilmChange(updatedFilm) {
+    this._films = updateItem(this._films, updatedFilm);
+    this._filmCardPresenter[updatedFilm.id].init(updatedFilm);
   }
 }

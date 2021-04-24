@@ -29,9 +29,43 @@ export default class Popup extends AbstractView {
   constructor(film) {
     super();
     this._film = film;
+
+    this._watchlistChangeHandler = this._watchlistChangeHandler.bind(this);
+    this._favoriteChangeHandler = this._favoriteChangeHandler.bind(this);
+    this._watchedChangeHandler = this._watchedChangeHandler.bind(this);
   }
 
   getTemplate() {
     return createPopupTemplate(this._film);
+  }
+
+  setWatchlistChangeHandler(callback) {
+    this._callback.watchlistChange = callback;
+    this.getElement().querySelector('.film-details__control-label--watchlist').addEventListener('change', this._watchlistChangeHandler);
+  }
+
+  setFavoriteChangeHandler(callback) {
+    this._callback.favoriteChange = callback;
+    this.getElement().querySelector('.film-details__control-label--favorite').addEventListener('change', this._favoriteChangeHandler);
+  }
+
+  setWatchedChangeHandler(callback) {
+    this._callback.watchedChange = callback;
+    this.getElement().querySelector('.film-details__control-label--watched').addEventListener('change', this._watchedChangeHandler);
+  }
+
+  _watchlistChangeHandler(evt) {
+    evt.preventDefault();
+    this._callback.watchlistChange();
+  }
+
+  _favoriteChangeHandler(evt) {
+    evt.preventDefault();
+    this._callback.favoriteChange();
+  }
+
+  _watchedChangeHandler(evt) {
+    evt.preventDefault();
+    this._callback.watchedChange();
   }
 }
