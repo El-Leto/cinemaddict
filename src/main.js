@@ -6,7 +6,7 @@ import ProfileView from './view/profile.js';
 import StatisticsView from './view/statistics.js';
 import { generateFilm } from './mock/film.js';
 import { generateFilter } from './mock/filter.js';
-import { InsertPosition, render } from './render.js';
+import { InsertPosition, render } from './utils/render.js';
 import FilmListPresenter from './presenter/films-list.js';
 
 const MAX_FILM_COUNT = 20;

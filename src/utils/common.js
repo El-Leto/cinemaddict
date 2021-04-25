@@ -7,7 +7,7 @@ const getСapitalLetter = (word) => (
   `${word[0].toUpperCase()}${word.slice(1)}`
 );
 
-const updateItem = (items, update) => {
+const updateItemById = (items, update) => {
   const index = items.findIndex((item) => item.id === update.id);
 
   if (index === -1) {
@@ -21,4 +21,4 @@ const updateItem = (items, update) => {
   ];
 };
 
-export { truncateText, getСapitalLetter, updateItem };
+export { truncateText, getСapitalLetter, updateItemById };

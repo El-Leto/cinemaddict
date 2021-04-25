@@ -1,4 +1,4 @@
-import Abstract from './view/abstract.js';
+import AbstractView from '../view/abstract.js';
 
 const InsertPosition = {
   BEFORE_END: 'beforeend',
@@ -6,11 +6,11 @@ const InsertPosition = {
 };
 
 const render = (container, element, place) => {
-  if (container instanceof Abstract) {
+  if (container instanceof AbstractView) {
     container = container.getElement();
   }
 
-  if (element instanceof Abstract) {
+  if (element instanceof AbstractView) {
     element = element.getElement();
   }
 
@@ -33,22 +33,36 @@ const createElement = (template) => {
   return wrapper.firstChild;
 };
 
+// Пока не используется
 const replace = (newChild, oldChild) => {
-  if (oldChild instanceof Abstract) {
+  if (oldChild === null || newChild === null) {
+    throw new Error('Can\'t replace unexisting elements');
+  }
+
+  if (oldChild instanceof AbstractView) {
     oldChild = oldChild.getElement();
   }
 
-  if (newChild instanceof Abstract) {
+  if (newChild instanceof AbstractView) {
     newChild = newChild.getElement();
   }
 
   const parent = oldChild.parentElement;
 
-  if (parent === null || oldChild === null || newChild === null) {
-    throw new Error('Can\'t replace unexisting elements');
+  if (parent === null) {
+    throw new Error('No parent element');
   }
 
   parent.replaceChild(newChild, oldChild);
 };
 
-export { InsertPosition, render, createElement, replace };
+const remove = (component) => {
+  if (!(component instanceof AbstractView)) {
+    throw new Error('Can remove only components');
+  }
+
+  component.getElement().remove();
+  component.removeElement();
+};
+
+export { InsertPosition, render, createElement, replace, remove };

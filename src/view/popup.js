@@ -30,9 +30,10 @@ export default class Popup extends AbstractView {
     super();
     this._film = film;
 
-    this._watchlistChangeHandler = this._watchlistChangeHandler.bind(this);
-    this._favoriteChangeHandler = this._favoriteChangeHandler.bind(this);
-    this._watchedChangeHandler = this._watchedChangeHandler.bind(this);
+    this._addToWatchlistClickHandler = this._addToWatchlistClickHandler.bind(this);
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+    this._markAsWatchedClickHandler = this._markAsWatchedClickHandler.bind(this);
+    this._popupCloseButtonClickHandler = this._popupCloseButtonClickHandler.bind(this);
   }
 
   getTemplate() {
@@ -40,32 +41,41 @@ export default class Popup extends AbstractView {
   }
 
   setWatchlistChangeHandler(callback) {
-    this._callback.watchlistChange = callback;
-    this.getElement().querySelector('.film-details__control-label--watchlist').addEventListener('change', this._watchlistChangeHandler);
+    this._callback.changeWatchlist = callback;
+    this.getElement().querySelector('.film-details__control-label--watchlist').addEventListener('change', this._addToWatchlistClickHandler);
   }
 
   setFavoriteChangeHandler(callback) {
-    this._callback.favoriteChange = callback;
-    this.getElement().querySelector('.film-details__control-label--favorite').addEventListener('change', this._favoriteChangeHandler);
+    this._callback.changeFavorite = callback;
+    this.getElement().querySelector('.film-details__control-label--favorite').addEventListener('change', this._favoriteClickHandler);
   }
 
   setWatchedChangeHandler(callback) {
-    this._callback.watchedChange = callback;
-    this.getElement().querySelector('.film-details__control-label--watched').addEventListener('change', this._watchedChangeHandler);
+    this._callback.changeWatched = callback;
+    this.getElement().querySelector('.film-details__control-label--watched').addEventListener('change', this._markAsWatchedClickHandler);
   }
 
-  _watchlistChangeHandler(evt) {
-    evt.preventDefault();
-    this._callback.watchlistChange();
+  setCloseButtonClickHandler(callback) {
+    this._callback.clickCloseButton = callback;
+    this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._popupCloseButtonClickHandler);
   }
 
-  _favoriteChangeHandler(evt) {
+  _addToWatchlistClickHandler(evt) {
     evt.preventDefault();
-    this._callback.favoriteChange();
+    this._callback.changeWatchlist();
   }
 
-  _watchedChangeHandler(evt) {
+  _favoriteClickHandler(evt) {
     evt.preventDefault();
-    this._callback.watchedChange();
+    this._callback.changeFavorite();
+  }
+
+  _markAsWatchedClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.changeWatched();
+  }
+
+  _popupCloseButtonClickHandler() {
+    this._callback.clickCloseButton();
   }
 }
