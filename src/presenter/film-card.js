@@ -3,7 +3,7 @@ import PopupView from '../view/popup.js';
 import { InsertPosition, render, replace, remove } from '../utils/render.js';
 
 const Mode = {
-  DEFAULT: 'DEFAULT',
+  CLOSE: 'CLOSE',
   OPENED: 'OPENED',
 };
 
@@ -15,7 +15,7 @@ export default class FilmCard {
 
     this._view = null;
     this._popupView = null;
-    this._mode = Mode.DEFAULT;
+    this._mode = Mode.CLOSE;
 
     this._handleViewClick = this._handleViewClick.bind(this);
     this._buttonEscKeydownHandler = this._buttonEscKeydownHandler.bind(this);
@@ -43,22 +43,22 @@ export default class FilmCard {
     this._view.setFavoriteClickHandler(this._handleFavoriteClick);
     this._view.setWatchedClickHandler(this._handleWatchedClick);
 
-    this._popupView.setWatchlistChangeHandler(this._handleWatchlistClick);
-    this._popupView.setFavoriteChangeHandler(this._handleFavoriteClick);
-    this._popupView.setWatchedChangeHandler(this._handleWatchedClick);
+    this._popupView.setWatchlistChangeHandler(this._handleWatchlistChange);
+    this._popupView.setFavoriteChangeHandler(this._handleFavoriteChange);
+    this._popupView.setWatchedChangeHandler(this._handleWatchedChange);
 
     if (prevFilmCardView === null || prevPopupView === null) {
       render(this._container, this._view, InsertPosition.BEFORE_END);
       return;
     }
 
-    if (this._mode === Mode.DEFAULT) {
+    if (this._mode === Mode.CLOSE) {
       replace(this._view, prevFilmCardView);
     }
 
     if (this._mode === Mode.OPENED) {
+      replace(this._popupView, prevPopupView);
       replace(this._view, prevFilmCardView);
-      this._popupView = prevPopupView;
     }
 
     remove(prevFilmCardView);
@@ -66,8 +66,8 @@ export default class FilmCard {
   }
 
   destroy() {
-    this._view.getElement().remove();
-    this._view.removeElement();
+    remove(this._view);
+    remove(this._popupView);
   }
 
   resetView() {
@@ -80,6 +80,7 @@ export default class FilmCard {
     document.body.classList.toggle('hide-overflow');
     document.body.appendChild(this._popupView.getElement());
     document.addEventListener('keydown', this._buttonEscKeydownHandler);
+    this._changeMode();
     this._mode = Mode.OPENED;
     this._popupView.setCloseButtonClickHandler(this._handlePopupCloseButtonClick);
   }
@@ -88,7 +89,7 @@ export default class FilmCard {
     remove(this._popupView);
     document.body.classList.toggle('hide-overflow');
     document.removeEventListener('keydown', this._buttonEscKeydownHandler);
-    this._mode = Mode.DEFAULT;
+    this._mode = Mode.CLOSE;
   }
 
   _handleWatchlistClick() {
@@ -116,6 +117,42 @@ export default class FilmCard {
   }
 
   _handleWatchedClick() {
+    this._changeData(
+      Object.assign(
+        {},
+        this._film,
+        {
+          isWatched: !this._film.isWatched,
+        },
+      ),
+    );
+  }
+
+  _handleWatchlistChange() {
+    this._changeData(
+      Object.assign(
+        {},
+        this._film,
+        {
+          isWatchlist: !this._film.isWatchlist,
+        },
+      ),
+    );
+  }
+
+  _handleFavoriteChange() {
+    this._changeData(
+      Object.assign(
+        {},
+        this._film,
+        {
+          isFavorite: !this._film.isFavorite,
+        },
+      ),
+    );
+  }
+
+  _handleWatchedChange() {
     this._changeData(
       Object.assign(
         {},

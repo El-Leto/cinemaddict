@@ -30,9 +30,9 @@ export default class Popup extends AbstractView {
     super();
     this._film = film;
 
-    this._addToWatchlistClickHandler = this._addToWatchlistClickHandler.bind(this);
-    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
-    this._markAsWatchedClickHandler = this._markAsWatchedClickHandler.bind(this);
+    this._addToWatchlistChangeHandler = this._addToWatchlistChangeHandler.bind(this);
+    this._favoriteChangeHandler = this._favoriteChangeHandler.bind(this);
+    this._markAsWatchedChangeHandler = this._markAsWatchedChangeHandler.bind(this);
     this._popupCloseButtonClickHandler = this._popupCloseButtonClickHandler.bind(this);
   }
 
@@ -42,17 +42,17 @@ export default class Popup extends AbstractView {
 
   setWatchlistChangeHandler(callback) {
     this._callback.changeWatchlist = callback;
-    this.getElement().querySelector('.film-details__control-label--watchlist').addEventListener('change', this._addToWatchlistClickHandler);
+    this.getElement().querySelector('.film-details__control-label--watchlist').addEventListener('change', this._addToWatchlistChangeHandler);
   }
 
   setFavoriteChangeHandler(callback) {
     this._callback.changeFavorite = callback;
-    this.getElement().querySelector('.film-details__control-label--favorite').addEventListener('change', this._favoriteClickHandler);
+    this.getElement().querySelector('.film-details__control-label--favorite').addEventListener('change', this._favoriteChangeHandler);
   }
 
   setWatchedChangeHandler(callback) {
     this._callback.changeWatched = callback;
-    this.getElement().querySelector('.film-details__control-label--watched').addEventListener('change', this._markAsWatchedClickHandler);
+    this.getElement().querySelector('.film-details__control-label--watched').addEventListener('change', this._markAsWatchedChangeHandler);
   }
 
   setCloseButtonClickHandler(callback) {
@@ -60,17 +60,17 @@ export default class Popup extends AbstractView {
     this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._popupCloseButtonClickHandler);
   }
 
-  _addToWatchlistClickHandler(evt) {
+  _addToWatchlistChangeHandler(evt) {
     evt.preventDefault();
     this._callback.changeWatchlist();
   }
 
-  _favoriteClickHandler(evt) {
+  _favoriteChangeHandler(evt) {
     evt.preventDefault();
     this._callback.changeFavorite();
   }
 
-  _markAsWatchedClickHandler(evt) {
+  _markAsWatchedChangeHandler(evt) {
     evt.preventDefault();
     this._callback.changeWatched();
   }
