@@ -43,9 +43,11 @@ export default class FilmCard {
     this._view.setFavoriteClickHandler(this._handleFavoriteClick);
     this._view.setWatchedClickHandler(this._handleWatchedClick);
 
-    this._popupView.setWatchlistClickHandler(this._handleWatchlistClick);
-    this._popupView.setFavoriteClickHandler(this._handleFavoriteClick);
-    this._popupView.setWatchedClickHandler(this._handleWatchedClick);
+    this._setPopupEventListeners();
+
+    // this._popupView.setWatchlistClickHandler(this._handleWatchlistClick);
+    // this._popupView.setFavoriteClickHandler(this._handleFavoriteClick);
+    // this._popupView.setWatchedClickHandler(this._handleWatchedClick);
 
     if (prevFilmCardView === null || prevPopupView === null) {
       render(this._container, this._view);
@@ -76,16 +78,31 @@ export default class FilmCard {
     }
   }
 
+  _setPopupEventListeners() {
+    this._popupView.setWatchlistClickHandler(this._handleWatchlistClick);
+    this._popupView.setFavoriteClickHandler(this._handleFavoriteClick);
+    this._popupView.setWatchedClickHandler(this._handleWatchedClick);
+    this._popupView.setCloseButtonClickHandler(this._handlePopupCloseButtonClick);
+  }
+
   _handleViewClick() {
     if (this._mode === Mode.OPENED) {
       return;
     }
-    document.body.classList.add('hide-overflow');
-    render(document.body, this._popupView);
-    document.addEventListener('keydown', this._buttonEscKeydownHandler);
+    // document.body.classList.add('hide-overflow');
+    // render(document.body, this._popupView);
+    // document.addEventListener('keydown', this._buttonEscKeydownHandler);
+    // this._changeMode();
+    // this._mode = Mode.OPENED;
+    // this._popupView.setCloseButtonClickHandler(this._handlePopupCloseButtonClick);
     this._changeMode();
     this._mode = Mode.OPENED;
-    this._popupView.setCloseButtonClickHandler(this._handlePopupCloseButtonClick);
+    this._setPopupEventListeners();
+    document.addEventListener('keydown', this._buttonEscKeydownHandler);
+    document.body.classList.add('hide-overflow');
+    render(document.body, this._popupView);
+    // this._changeMode();
+    // this._mode = Mode.OPENED;
   }
 
   _closeFilmDetail() {
