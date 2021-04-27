@@ -6,7 +6,7 @@ import ProfileView from './view/profile.js';
 import StatisticsView from './view/statistics.js';
 import { generateFilm } from './mock/film.js';
 import { generateFilter } from './mock/filter.js';
-import { InsertPosition, render } from './utils/render.js';
+import { render } from './utils/render.js';
 import FilmListPresenter from './presenter/films-list.js';
 
 const MAX_FILM_COUNT = 20;
@@ -22,9 +22,9 @@ const filters = generateFilter(films);
 const siteMain = document.querySelector('.main');
 const header = document.querySelector('.header');
 
-render(header, new ProfileView(), InsertPosition.BEFORE_END);
-render(siteMain, new MainNavigationView(filters), InsertPosition.BEFORE_END);
-render(siteMain, new SiteSortView(), InsertPosition.BEFORE_END);
+render(header, new ProfileView());
+render(siteMain, new MainNavigationView(filters));
+render(siteMain, new SiteSortView());
 
 const filmListPresenter = new FilmListPresenter(siteMain);
 
@@ -70,4 +70,4 @@ filmListPresenter.init(films);
 
 const statistics = document.querySelector('.footer__statistics');
 
-render(statistics, new StatisticsView(MAX_FILM_COUNT), InsertPosition.BEFORE_END);
+render(statistics, new StatisticsView(MAX_FILM_COUNT));

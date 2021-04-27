@@ -4,7 +4,7 @@ import AllFilmsListView from '../view/all-films-list.js';
 import ShowMoreButtonView from '../view/show-more-button.js';
 import NoFilmsView from '../view/no-films.js';
 import FilmCardPresenter from './film-card.js';
-import { InsertPosition, render, remove } from '../utils/render.js';
+import { render, remove } from '../utils/render.js';
 import { updateItemById } from '../utils/common.js';
 
 const FILM_COUNT_PER_STEP = 5;
@@ -29,9 +29,9 @@ export default class FilmList {
   init(films) {
     this._films = films.slice();
 
-    render(this._container, this._MainContentView, InsertPosition.BEFORE_END);
-    render(this._MainContentView, this._allFilmsView, InsertPosition.BEFORE_END);
-    this._renderFilmsList();
+    this._renderAllFilms();
+    render(this._container, this._MainContentView);
+    render(this._MainContentView, this._allFilmsView);
   }
 
   _handleModeChange() {
@@ -54,7 +54,7 @@ export default class FilmList {
   }
 
   _renderNoFilms() {
-    render(this._container, this._noFilmsView, InsertPosition.BEFORE_END);
+    render(this._container, this._noFilmsView);
   }
 
   _handleShowMoreButtonClick() {
@@ -67,14 +67,14 @@ export default class FilmList {
   }
 
   _renderShowMoreButton() {
-    render(this._allFilmsView, this._showMoreButtonView, InsertPosition.BEFORE_END);
+    render(this._allFilmsView, this._showMoreButtonView);
 
     this._showMoreButtonView.setClickHandler(this._handleShowMoreButtonClick);
   }
 
-  _renderFilmsList() {
+  _renderAllFilms() {
     this._renderFilms(0, FILM_COUNT_PER_STEP);
-    render(this._allFilmsView, this._allFilmsListView, InsertPosition.BEFORE_END);
+    render(this._allFilmsView, this._allFilmsListView);
 
     if (this._films.length > FILM_COUNT_PER_STEP) {
       this._renderShowMoreButton();
@@ -87,7 +87,7 @@ export default class FilmList {
       return;
     }
 
-    this._renderFilmsList();
+    this._renderAllFilms();
   }
 
   _clear() {

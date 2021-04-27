@@ -1,6 +1,6 @@
 import FilmCardView from '../view/film-card.js';
 import PopupView from '../view/popup.js';
-import { InsertPosition, render, replace, remove } from '../utils/render.js';
+import { render, replace, remove } from '../utils/render.js';
 
 const Mode = {
   CLOSE: 'CLOSE',
@@ -43,12 +43,12 @@ export default class FilmCard {
     this._view.setFavoriteClickHandler(this._handleFavoriteClick);
     this._view.setWatchedClickHandler(this._handleWatchedClick);
 
-    this._popupView.setWatchlistChangeHandler(this._handleWatchlistChange);
-    this._popupView.setFavoriteChangeHandler(this._handleFavoriteChange);
-    this._popupView.setWatchedChangeHandler(this._handleWatchedChange);
+    this._popupView.setWatchlistClickHandler(this._handleWatchlistClick);
+    this._popupView.setFavoriteClickHandler(this._handleFavoriteClick);
+    this._popupView.setWatchedClickHandler(this._handleWatchedClick);
 
     if (prevFilmCardView === null || prevPopupView === null) {
-      render(this._container, this._view, InsertPosition.BEFORE_END);
+      render(this._container, this._view);
       return;
     }
 
@@ -77,8 +77,11 @@ export default class FilmCard {
   }
 
   _handleViewClick() {
-    document.body.classList.toggle('hide-overflow');
-    document.body.appendChild(this._popupView.getElement());
+    if (this._mode === Mode.OPENED) {
+      return;
+    }
+    document.body.classList.add('hide-overflow');
+    render(document.body, this._popupView);
     document.addEventListener('keydown', this._buttonEscKeydownHandler);
     this._changeMode();
     this._mode = Mode.OPENED;
@@ -87,7 +90,7 @@ export default class FilmCard {
 
   _closeFilmDetail() {
     remove(this._popupView);
-    document.body.classList.toggle('hide-overflow');
+    document.body.classList.remove('hide-overflow');
     document.removeEventListener('keydown', this._buttonEscKeydownHandler);
     this._mode = Mode.CLOSE;
   }
@@ -117,42 +120,6 @@ export default class FilmCard {
   }
 
   _handleWatchedClick() {
-    this._changeData(
-      Object.assign(
-        {},
-        this._film,
-        {
-          isWatched: !this._film.isWatched,
-        },
-      ),
-    );
-  }
-
-  _handleWatchlistChange() {
-    this._changeData(
-      Object.assign(
-        {},
-        this._film,
-        {
-          isWatchlist: !this._film.isWatchlist,
-        },
-      ),
-    );
-  }
-
-  _handleFavoriteChange() {
-    this._changeData(
-      Object.assign(
-        {},
-        this._film,
-        {
-          isFavorite: !this._film.isFavorite,
-        },
-      ),
-    );
-  }
-
-  _handleWatchedChange() {
     this._changeData(
       Object.assign(
         {},

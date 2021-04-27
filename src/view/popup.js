@@ -30,9 +30,9 @@ export default class Popup extends AbstractView {
     super();
     this._film = film;
 
-    this._addToWatchlistChangeHandler = this._addToWatchlistChangeHandler.bind(this);
-    this._favoriteChangeHandler = this._favoriteChangeHandler.bind(this);
-    this._markAsWatchedChangeHandler = this._markAsWatchedChangeHandler.bind(this);
+    this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+    this._watchedClickHandler = this._watchedClickHandler.bind(this);
     this._popupCloseButtonClickHandler = this._popupCloseButtonClickHandler.bind(this);
   }
 
@@ -40,19 +40,19 @@ export default class Popup extends AbstractView {
     return createPopupTemplate(this._film);
   }
 
-  setWatchlistChangeHandler(callback) {
-    this._callback.changeWatchlist = callback;
-    this.getElement().querySelector('.film-details__control-label--watchlist').addEventListener('change', this._addToWatchlistChangeHandler);
+  setWatchlistClickHandler(callback) {
+    this._callback.clickWatchlist = callback;
+    this.getElement().querySelector('.film-details__control-label--watchlist').addEventListener('click', this._watchlistClickHandler);
   }
 
-  setFavoriteChangeHandler(callback) {
-    this._callback.changeFavorite = callback;
-    this.getElement().querySelector('.film-details__control-label--favorite').addEventListener('change', this._favoriteChangeHandler);
+  setFavoriteClickHandler(callback) {
+    this._callback.clickFavorite = callback;
+    this.getElement().querySelector('.film-details__control-label--favorite').addEventListener('click', this._favoriteClickHandler);
   }
 
-  setWatchedChangeHandler(callback) {
-    this._callback.changeWatched = callback;
-    this.getElement().querySelector('.film-details__control-label--watched').addEventListener('change', this._markAsWatchedChangeHandler);
+  setWatchedClickHandler(callback) {
+    this._callback.clickWatched = callback;
+    this.getElement().querySelector('.film-details__control-label--watched').addEventListener('click', this._watchedClickHandler);
   }
 
   setCloseButtonClickHandler(callback) {
@@ -60,19 +60,16 @@ export default class Popup extends AbstractView {
     this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._popupCloseButtonClickHandler);
   }
 
-  _addToWatchlistChangeHandler(evt) {
-    evt.preventDefault();
-    this._callback.changeWatchlist();
+  _watchlistClickHandler() {
+    this._callback.clickWatchlist();
   }
 
-  _favoriteChangeHandler(evt) {
-    evt.preventDefault();
-    this._callback.changeFavorite();
+  _favoriteClickHandler() {
+    this._callback.clickFavorite();
   }
 
-  _markAsWatchedChangeHandler(evt) {
-    evt.preventDefault();
-    this._callback.changeWatched();
+  _watchedClickHandler() {
+    this._callback.clickWatched();
   }
 
   _popupCloseButtonClickHandler() {

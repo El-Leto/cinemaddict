@@ -5,7 +5,7 @@ const InsertPosition = {
   AFTER_END: 'afterend',
 };
 
-const render = (container, element, place) => {
+const render = (container, element, place = InsertPosition.BEFORE_END) => {
   if (container instanceof AbstractView) {
     container = container.getElement();
   }
