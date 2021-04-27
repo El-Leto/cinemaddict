@@ -29,9 +29,50 @@ export default class Popup extends AbstractView {
   constructor(film) {
     super();
     this._film = film;
+
+    this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+    this._watchedClickHandler = this._watchedClickHandler.bind(this);
+    this._popupCloseButtonClickHandler = this._popupCloseButtonClickHandler.bind(this);
   }
 
   getTemplate() {
     return createPopupTemplate(this._film);
+  }
+
+  setWatchlistClickHandler(callback) {
+    this._callback.clickWatchlist = callback;
+    this.getElement().querySelector('.film-details__control-label--watchlist').addEventListener('click', this._watchlistClickHandler);
+  }
+
+  setFavoriteClickHandler(callback) {
+    this._callback.clickFavorite = callback;
+    this.getElement().querySelector('.film-details__control-label--favorite').addEventListener('click', this._favoriteClickHandler);
+  }
+
+  setWatchedClickHandler(callback) {
+    this._callback.clickWatched = callback;
+    this.getElement().querySelector('.film-details__control-label--watched').addEventListener('click', this._watchedClickHandler);
+  }
+
+  setCloseButtonClickHandler(callback) {
+    this._callback.clickCloseButton = callback;
+    this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._popupCloseButtonClickHandler);
+  }
+
+  _watchlistClickHandler() {
+    this._callback.clickWatchlist();
+  }
+
+  _favoriteClickHandler() {
+    this._callback.clickFavorite();
+  }
+
+  _watchedClickHandler() {
+    this._callback.clickWatched();
+  }
+
+  _popupCloseButtonClickHandler() {
+    this._callback.clickCloseButton();
   }
 }
