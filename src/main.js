@@ -1,5 +1,4 @@
 import MainNavigationView from './view/main-navigation.js';
-import SiteSortView from './view/site-sort.js';
 import ProfileView from './view/profile.js';
 //import TopRatedFilmsListView from './view/top-rated-films-list.js';
 //import MostCommentedFilmsListView from './view/most-commented-films-list.js';
@@ -24,7 +23,6 @@ const header = document.querySelector('.header');
 
 render(header, new ProfileView());
 render(siteMain, new MainNavigationView(filters));
-render(siteMain, new SiteSortView());
 
 const filmListPresenter = new FilmListPresenter(siteMain);
 

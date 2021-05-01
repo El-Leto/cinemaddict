@@ -66,6 +66,7 @@ export default class FilmCard {
   destroy() {
     remove(this._view);
     remove(this._popupView);
+    this._closeFilmDetail();
   }
 
   resetView() {
@@ -86,11 +87,13 @@ export default class FilmCard {
       return;
     }
     this._changeMode();
-    this._mode = Mode.OPENED;
+
     this._setPopupEventListeners();
     document.addEventListener('keydown', this._buttonEscKeydownHandler);
     document.body.classList.add('hide-overflow');
     render(document.body, this._popupView);
+
+    this._mode = Mode.OPENED;
   }
 
   _closeFilmDetail() {

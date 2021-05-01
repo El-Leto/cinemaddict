@@ -4,8 +4,10 @@ import AllFilmsListView from '../view/all-films-list.js';
 import ShowMoreButtonView from '../view/show-more-button.js';
 import NoFilmsView from '../view/no-films.js';
 import FilmCardPresenter from './film-card.js';
+import SiteSort from '../view/site-sort.js';
 import { render, remove } from '../utils/render.js';
-import { updateItemById } from '../utils/common.js';
+import { updateItemById} from '../utils/common.js';
+import { SortType } from '../const.js';
 
 const FILM_COUNT_PER_STEP = 5;
 
@@ -13,6 +15,7 @@ export default class FilmList {
   constructor(container) {
     this._container = container;
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
+    this._siteSortView = new SiteSort();
     this._allFilmsView = new AllFilmsView();
     this._allFilmsListView = new AllFilmsListView();
     this._noFilmsView = new NoFilmsView();
@@ -22,14 +25,17 @@ export default class FilmList {
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleFilmChange = this._handleFilmChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
     this._filmCardPresenter = {};
+    this._currentSortType = SortType.DEFAULT;
   }
 
   init(films) {
     this._films = films.slice();
+    this._sourcedFilms = films.slice();
 
-    this._renderAllFilms();
+    this._render();
     render(this._container, this._MainContentView);
     render(this._MainContentView, this._allFilmsView);
   }
@@ -47,6 +53,17 @@ export default class FilmList {
     this._filmCardPresenter[film.id] = filmCardPresenter;
   }
 
+  _handleSortTypeChange(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    this._sortFilms(sortType);
+
+    this._clear();
+    this._renderAllFilms();
+  }
+
   _renderFilms(from, to) {
     this._films
       .slice(from, to)
@@ -55,6 +72,11 @@ export default class FilmList {
 
   _renderNoFilms() {
     render(this._container, this._noFilmsView);
+  }
+
+  _renderSort() {
+    render(this._container, this._siteSortView);
+    this._siteSortView.setSortTypeClickHandler(this._handleSortTypeChange);
   }
 
   _handleShowMoreButtonClick() {
@@ -87,6 +109,7 @@ export default class FilmList {
       return;
     }
 
+    this._renderSort();
     this._renderAllFilms();
   }
 
@@ -101,6 +124,22 @@ export default class FilmList {
 
   _handleFilmChange(updatedFilm) {
     this._films = updateItemById(this._films, updatedFilm);
+    this._sourcedFilms = updateItemById(this._sourcedFilms, updatedFilm);
     this._filmCardPresenter[updatedFilm.id].init(updatedFilm);
+  }
+
+  _sortFilms(sortType) {
+    switch (sortType) {
+      case SortType.BY_DATE:
+        this._films.sort((filmA, filmB) => {return filmB.date - filmA.date;});
+        break;
+      case SortType.BY_RATING:
+        this._films.sort((filmA, filmB) => {return filmB.totalRating - filmA.totalRating;});
+        break;
+      default:
+        this._films = this._sourcedFilms.slice();
+    }
+
+    this._currentSortType = sortType;
   }
 }
