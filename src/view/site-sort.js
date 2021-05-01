@@ -1,5 +1,5 @@
 import AbstractView from './abstract.js';
-import SortType from '../const.js';
+import { SortType } from '../const.js';
 
 const createSiteSortTemplate = () => {
   return (
@@ -22,7 +22,7 @@ export default class SiteSort extends AbstractView {
   }
 
   setSortTypeChangeHandler(callback) {
-    this._callback.sortTypeChange = callback;
+    this._callback.changeSortType = callback;
     this.getElement().addEventListener('click', this._sortTypeChangeHandler);
   }
 
@@ -32,6 +32,16 @@ export default class SiteSort extends AbstractView {
     }
 
     evt.preventDefault();
-    this._callback.sortTypeChange(evt.target.dataset.sortType);
+
+    if (!evt.target.classList.contains('sort__button--active')) {
+      this._removeButtonActive();
+      evt.target.classList.add('sort__button--active');
+    }
+
+    this._callback.changeSortType(evt.target.dataset.sortType);
+  }
+
+  _removeButtonActive() {
+    this.getElement().querySelector('.sort__button--active').classList.remove('sort__button--active');
   }
 }
