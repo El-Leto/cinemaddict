@@ -24,26 +24,26 @@ export default class SiteSort extends AbstractView {
 
   setSortTypeClickHandler(callback) {
     this._callback.clickSortType = callback;
-    this.getElement().addEventListener('click', this._sortTypeChangeHandler);
+    this.getElement().addEventListener('click', this._sortTypeClickHandler);
   }
 
   _removeButtonActive() {
     this.getElement().querySelector('.sort__button.sort__button--active').classList.remove('sort__button--active');
   }
 
-  _sortTypeChangeHandler(evt) {
-    const theTarget = evt.target;
-    if (theTarget.tagName !== 'A') {
+  _sortTypeClickHandler(evt) {
+    const target = evt.target;
+    if (target.tagName !== 'A') {
       return;
     }
 
     evt.preventDefault();
 
-    if (!theTarget.classList.contains('sort__button--active')) {
+    if (!target.classList.contains('sort__button--active')) {
       this._removeButtonActive();
-      theTarget.classList.add('sort__button--active');
+      target.classList.add('sort__button--active');
     }
 
-    this._callback.clickSortType(theTarget.dataset.sortType);
+    this._callback.clickSortType(target.dataset.sortType);
   }
 }
