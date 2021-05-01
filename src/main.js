@@ -23,7 +23,6 @@ const header = document.querySelector('.header');
 
 render(header, new ProfileView());
 render(siteMain, new MainNavigationView(filters));
-//render(siteMain, new SiteSortView());
 
 const filmListPresenter = new FilmListPresenter(siteMain);
 

@@ -6,7 +6,7 @@ import NoFilmsView from '../view/no-films.js';
 import FilmCardPresenter from './film-card.js';
 import SiteSort from '../view/site-sort.js';
 import { render, remove } from '../utils/render.js';
-import { updateItemById, sortByDate, sortByRating } from '../utils/common.js';
+import { updateItemById} from '../utils/common.js';
 import { SortType } from '../const.js';
 
 const FILM_COUNT_PER_STEP = 5;
@@ -76,7 +76,7 @@ export default class FilmList {
 
   _renderSort() {
     render(this._container, this._siteSortView);
-    this._siteSortView.setSortTypeChangeHandler(this._handleSortTypeChange);
+    this._siteSortView.setSortTypeClickHandler(this._handleSortTypeChange);
   }
 
   _handleShowMoreButtonClick() {
@@ -131,10 +131,10 @@ export default class FilmList {
   _sortFilms(sortType) {
     switch (sortType) {
       case SortType.BY_DATE:
-        this._films.sort(sortByDate);
+        this._films.sort((filmA, filmB) => {return filmB.date - filmA.date;});
         break;
       case SortType.BY_RATING:
-        this._films.sort(sortByRating);
+        this._films.sort((filmA, filmB) => {return filmB.totalRating - filmA.totalRating;});
         break;
       default:
         this._films = this._sourcedFilms.slice();

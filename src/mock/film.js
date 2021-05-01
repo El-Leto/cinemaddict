@@ -126,7 +126,7 @@ const generateGenres = () => {
 };
 
 const getDateCreate = () => {
-  const year = getRandomInteger(0, 100);
+  const year = getRandomInteger(0, 99);
   const month = getRandomInteger(0, 12);
   const day = getRandomInteger(0, 31);
   const data = new Date(year, month, day);

@@ -17,31 +17,33 @@ export default class SiteSort extends AbstractView {
 
     this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
   }
+
   getTemplate() {
     return createSiteSortTemplate();
   }
 
-  setSortTypeChangeHandler(callback) {
-    this._callback.changeSortType = callback;
+  setSortTypeClickHandler(callback) {
+    this._callback.clickSortType = callback;
     this.getElement().addEventListener('click', this._sortTypeChangeHandler);
   }
 
+  _removeButtonActive() {
+    this.getElement().querySelector('.sort__button.sort__button--active').classList.remove('sort__button--active');
+  }
+
   _sortTypeChangeHandler(evt) {
-    if (evt.target.tagName !== 'A') {
+    const theTarget = evt.target;
+    if (theTarget.tagName !== 'A') {
       return;
     }
 
     evt.preventDefault();
 
-    if (!evt.target.classList.contains('sort__button--active')) {
+    if (!theTarget.classList.contains('sort__button--active')) {
       this._removeButtonActive();
-      evt.target.classList.add('sort__button--active');
+      theTarget.classList.add('sort__button--active');
     }
 
-    this._callback.changeSortType(evt.target.dataset.sortType);
-  }
-
-  _removeButtonActive() {
-    this.getElement().querySelector('.sort__button--active').classList.remove('sort__button--active');
+    this._callback.clickSortType(theTarget.dataset.sortType);
   }
 }
