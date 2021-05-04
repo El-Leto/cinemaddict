@@ -15,7 +15,7 @@ export default class SiteSort extends AbstractView {
   constructor() {
     super();
 
-    this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
+    this._sortTypeClickHandler = this._sortTypeClickHandler.bind(this);
   }
 
   getTemplate() {
