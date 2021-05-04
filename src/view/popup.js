@@ -91,6 +91,7 @@ export default class Popup extends SmartView {
   setCloseButtonClickHandler(callback) {
     this._callback.clickCloseButton = callback;
     this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._popupCloseButtonClickHandler);
+    this.restoreHandlers();
   }
 
   _setInnerHandlers() {

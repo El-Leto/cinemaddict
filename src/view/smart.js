@@ -20,8 +20,9 @@ export default class Smart extends AbstractView {
 
     parent.replaceChild(newElement, prevElement);
 
-    this.restoreHandlers();
     newElement.scrollTo(0, position);
+
+    this.restoreHandlers();
   }
 
   updateData(update, justDataUpdating) {
