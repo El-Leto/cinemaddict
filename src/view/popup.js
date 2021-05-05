@@ -1,10 +1,11 @@
 import { createButtonCloseTemplate, createTableTemplate, createControlsTemplate, createCommentListTemplate } from './popup/index.js';
-import AbstractView from './abstract.js';
+import SmartView from './smart.js';
 
 const createPopupTemplate = (film) => {
   const {
     comments,
   } = film;
+
 
   return (
     `<section class="film-details">
@@ -25,19 +26,34 @@ const createPopupTemplate = (film) => {
   );
 };
 
-export default class Popup extends AbstractView {
-  constructor(film) {
+export default class Popup extends SmartView {
+  constructor(data) {
     super();
-    this._film = film;
+    this._state = Popup.parseFilmCardToState(data);
 
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
     this._popupCloseButtonClickHandler = this._popupCloseButtonClickHandler.bind(this);
+
+    this._emojiListChangeHandler = this._emojiListChangeHandler.bind(this);
+    this._commentInputInputHandler = this._commentInputInputHandler.bind(this);
+
+    this._setInnerHandlers();
   }
 
   getTemplate() {
-    return createPopupTemplate(this._film);
+    return createPopupTemplate(this._state);
+  }
+
+  reset(data) {
+    this.updateData(
+      Popup.parseFilmCardToState(data),
+    );
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
   }
 
   setWatchlistClickHandler(callback) {
@@ -60,6 +76,12 @@ export default class Popup extends AbstractView {
     this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._popupCloseButtonClickHandler);
   }
 
+  _setInnerHandlers() {
+    const item = this.getElement();
+    item.querySelector('.film-details__emoji-list').addEventListener('change', this._emojiListChangeHandler);
+    item.querySelector('.film-details__comment-input').addEventListener('input', this._commentInputInputHandler);
+  }
+
   _watchlistClickHandler() {
     this._callback.clickWatchlist();
   }
@@ -74,5 +96,38 @@ export default class Popup extends AbstractView {
 
   _popupCloseButtonClickHandler() {
     this._callback.clickCloseButton();
+  }
+
+  _emojiListChangeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      currentEmoji: evt.target.value,
+    });
+  }
+
+  _commentInputInputHandler(evt) {
+    evt.preventDefault();
+    this.updateData(
+      { currentTextComment: evt.target.value },
+      true,
+    );
+  }
+
+  static parseFilmCardToState(film) {
+    return Object.assign(
+      {},
+      film,
+      {
+        currentEmoji: '',
+        currentTextComment: '',
+      },
+    );
+  }
+
+  static parseStateToFilmCard(film) {
+    film = Object.assign({}, film);
+    delete film.currentTextComment;
+    delete film.currentEmoji;
+    return film;
   }
 }

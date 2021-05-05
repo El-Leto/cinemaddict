@@ -1,5 +1,9 @@
 import { EMOJIS } from '../../const.js';
 
+const getAttributeChecked = (isChecked = false) => {
+  return isChecked ? 'checked' : '';
+};
+
 const createCommentTemplate = (comment) => {
   const {emoji, text, author, date} = comment;
 
@@ -20,30 +24,39 @@ const createCommentTemplate = (comment) => {
   );
 };
 
-const createEmojiTemplate = (emoji, isChecked = true) => (
-  `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}" ${isChecked ? '' : 'checked'}>
-  <label class="film-details__emoji-label" for="emoji-${emoji}">
-    <img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji">
-  </label>`
-);
+const createEmojiTemplate = (emoji, currentEmoji) => {
+
+  return EMOJIS.map((emoji) => {
+
+    const isEmojiCheck = emoji === currentEmoji;
+
+    return (
+      `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value=${emoji} ${getAttributeChecked(isEmojiCheck)}>
+      <label class="film-details__emoji-label" for="emoji-${emoji}">
+        <img src="./images/emoji/${emoji}.png" width="30" height="30" alt=${emoji}>
+      </label>`
+    );
+  }).join('');
+};
 
 const createCommentListTemplate = (film) => {
   const {
-    comments,
+    comments, currentEmoji, currentTextComment,
   } = film;
 
   const commentList = comments.map(createCommentTemplate).join('');
-
-  const emojiList = EMOJIS.map(createEmojiTemplate).join('');
+  const emojiList = createEmojiTemplate(EMOJIS, currentEmoji);
 
   return (
     `<ul class="film-details__comments-list">
       ${commentList}
     </ul>
     <div class="film-details__new-comment">
-      <div class="film-details__add-emoji-label"></div>
+      <div class="film-details__add-emoji-label">
+      ${currentEmoji !== '' ? `<img src="images/emoji/${currentEmoji}.png" width="55" height="55" alt="emoji-${currentEmoji}">` : ''}
+      </div>
       <label class="film-details__comment-label">
-        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${!currentTextComment !== '' ? currentTextComment : ''}</textarea>
       </label>
       <div class="film-details__emoji-list">
         ${emojiList}
