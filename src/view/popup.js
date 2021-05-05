@@ -1,6 +1,5 @@
 import { createButtonCloseTemplate, createTableTemplate, createControlsTemplate, createCommentListTemplate } from './popup/index.js';
 import SmartView from './smart.js';
-import { generateComment } from '../mock/comment.js';
 
 const createPopupTemplate = (film) => {
   const {
@@ -30,47 +29,31 @@ const createPopupTemplate = (film) => {
 export default class Popup extends SmartView {
   constructor(data) {
     super();
-    this._data = Popup.parseFilmCardToState(data);
+    this._state = Popup.parseFilmCardToState(data);
 
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
     this._popupCloseButtonClickHandler = this._popupCloseButtonClickHandler.bind(this);
 
-    this._emojiChangeHandler = this._emojiChangeHandler.bind(this);
-    this._inputTextCommentHandler = this._inputTextCommentHandler.bind(this);
+    this._emojiListChangeHandler = this._emojiListChangeHandler.bind(this);
+    this._commentInputInputHandler = this._commentInputInputHandler.bind(this);
 
     this._setInnerHandlers();
   }
 
   getTemplate() {
-    return createPopupTemplate(this._data);
+    return createPopupTemplate(this._state);
+  }
+
+  reset(data) {
+    this.updateData(
+      Popup.parseFilmCardToState(data),
+    );
   }
 
   restoreHandlers() {
     this._setInnerHandlers();
-  }
-
-  static parseFilmCardToState(film) {
-    return Object.assign(
-      {},
-      film,
-      {
-        currentEmoji: 'currentEmoji' in film,
-        currentTextComment: '',
-      },
-    );
-  }
-
-  static parseStateToFilmCard(film) {
-    film = Object.assign({}, film);
-    const newComment = generateComment();
-    newComment.text = film.currentTextComment;
-    newComment.emoji = film.currentEmoji;
-    film.comments.push(newComment);
-    delete film.currentTextComment;
-    delete film.currentEmoji;
-    return film;
   }
 
   setWatchlistClickHandler(callback) {
@@ -91,13 +74,12 @@ export default class Popup extends SmartView {
   setCloseButtonClickHandler(callback) {
     this._callback.clickCloseButton = callback;
     this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._popupCloseButtonClickHandler);
-    this.restoreHandlers();
   }
 
   _setInnerHandlers() {
-    this.getElement().querySelector('.film-details__emoji-list').addEventListener('change', this._emojiChangeHandler);
-    this.getElement().querySelector('.film-details__comment-input').addEventListener('input', this._inputTextCommentHandler);
-    this.getElement().addEventListener('keydown', this._sendNewCommentHandler);
+    const item = this.getElement();
+    item.querySelector('.film-details__emoji-list').addEventListener('change', this._emojiListChangeHandler);
+    item.querySelector('.film-details__comment-input').addEventListener('input', this._commentInputInputHandler);
   }
 
   _watchlistClickHandler() {
@@ -116,18 +98,36 @@ export default class Popup extends SmartView {
     this._callback.clickCloseButton();
   }
 
-  _emojiChangeHandler(evt) {
+  _emojiListChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({
       currentEmoji: evt.target.value,
     });
   }
 
-  _inputTextCommentHandler(evt) {
+  _commentInputInputHandler(evt) {
     evt.preventDefault();
     this.updateData(
       { currentTextComment: evt.target.value },
       true,
     );
+  }
+
+  static parseFilmCardToState(film) {
+    return Object.assign(
+      {},
+      film,
+      {
+        currentEmoji: '',
+        currentTextComment: '',
+      },
+    );
+  }
+
+  static parseStateToFilmCard(film) {
+    film = Object.assign({}, film);
+    delete film.currentTextComment;
+    delete film.currentEmoji;
+    return film;
   }
 }

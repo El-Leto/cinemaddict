@@ -1,5 +1,9 @@
 import { EMOJIS } from '../../const.js';
 
+const getAttributeChecked = (isChecked = false) => {
+  return isChecked ? 'checked' : '';
+};
+
 const createCommentTemplate = (comment) => {
   const {emoji, text, author, date} = comment;
 
@@ -21,11 +25,8 @@ const createCommentTemplate = (comment) => {
 };
 
 const createEmojiTemplate = (emoji, currentEmoji) => {
-  const getAttributeChecked = (isChecked = false) => {
-    return isChecked ? 'checked' : '';
-  };
 
-  const template = EMOJIS.map((emoji) => {
+  return EMOJIS.map((emoji) => {
 
     const isEmojiCheck = emoji === currentEmoji;
 
@@ -36,8 +37,6 @@ const createEmojiTemplate = (emoji, currentEmoji) => {
       </label>`
     );
   }).join('');
-
-  return template;
 };
 
 const createCommentListTemplate = (film) => {
@@ -54,10 +53,10 @@ const createCommentListTemplate = (film) => {
     </ul>
     <div class="film-details__new-comment">
       <div class="film-details__add-emoji-label">
-      ${currentEmoji ? `<img src="images/emoji/${currentEmoji}.png" width="55" height="55" alt="emoji-smile">` : ''}
+      ${currentEmoji !== '' ? `<img src="images/emoji/${currentEmoji}.png" width="55" height="55" alt="emoji-${currentEmoji}">` : ''}
       </div>
       <label class="film-details__comment-label">
-        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${!currentTextComment ? '' : currentTextComment}</textarea>
+        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${!currentTextComment !== '' ? currentTextComment : ''}</textarea>
       </label>
       <div class="film-details__emoji-list">
         ${emojiList}

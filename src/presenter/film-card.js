@@ -100,6 +100,7 @@ export default class FilmCard {
     remove(this._popupView);
     document.body.classList.remove('hide-overflow');
     document.removeEventListener('keydown', this._buttonEscKeydownHandler);
+    this._popupView.reset(this._film);
     this._mode = Mode.CLOSE;
   }
 
