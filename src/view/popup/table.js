@@ -1,4 +1,4 @@
-import { getTimeFromMins, formatReleaseDate }  from '../../utils/data.js';
+import { getTimeFromMins, formatReleaseDate }  from '../../utils/format-date.js';
 
 const createGenreSpan = (genres) => {
   return `<span class="film-details__genre">${genres}</span>`;

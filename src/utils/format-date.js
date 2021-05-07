@@ -1,4 +1,7 @@
 import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
+dayjs.extend(relativeTime);
 
 const MINUTES_PER_HOUR = 60;
 
@@ -14,4 +17,8 @@ const getTimeFromMins = (mins) => {
   return minutes + 'm';
 };
 
-export { formatReleaseDate, getTimeFromMins };
+const getCommentDate = (date) => {
+  return dayjs().to(dayjs(date));
+};
+
+export { formatReleaseDate, getTimeFromMins, getCommentDate };

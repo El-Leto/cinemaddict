@@ -1,4 +1,5 @@
 import { EMOJIS } from '../../const.js';
+import { getCommentDate } from '../../utils/format-date.js';
 
 const getAttributeChecked = (isChecked = false) => {
   return isChecked ? 'checked' : '';
@@ -16,7 +17,7 @@ const createCommentTemplate = (comment) => {
         <p class="film-details__comment-text">${text}</p>
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${author}</span>
-          <span class="film-details__comment-day">${date}</span>
+          <span class="film-details__comment-day">${getCommentDate(date)}</span>
           <button class="film-details__comment-delete">Delete</button>
         </p>
       </div>
@@ -56,7 +57,7 @@ const createCommentListTemplate = (film) => {
       ${currentEmoji !== '' ? `<img src="images/emoji/${currentEmoji}.png" width="55" height="55" alt="emoji-${currentEmoji}">` : ''}
       </div>
       <label class="film-details__comment-label">
-        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${!currentTextComment !== '' ? currentTextComment : ''}</textarea>
+        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${currentTextComment}</textarea>
       </label>
       <div class="film-details__emoji-list">
         ${emojiList}
