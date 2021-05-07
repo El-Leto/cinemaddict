@@ -1,21 +1,8 @@
 import { EMOJIS } from '../../const.js';
-import { formatCommentDate } from '../../utils/data.js';
+import { getCommentDate } from '../../utils/format-date.js';
 
 const getAttributeChecked = (isChecked = false) => {
   return isChecked ? 'checked' : '';
-};
-
-const getCommentDate = (date) => {
-  const diff = new Date() - date;
-  if (diff > 172800000) {
-    return formatCommentDate(date);
-  }
-  if (diff <= 172800000 && diff > 86400000) {
-    return '2 days ago';
-  }
-  if (diff <= 86400000) {
-    return 'Today';
-  }
 };
 
 const createCommentTemplate = (comment) => {

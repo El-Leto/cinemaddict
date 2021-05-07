@@ -52,6 +52,10 @@ export default class Popup extends SmartView {
     );
   }
 
+  restoreHandlers() {
+    this._setInnerHandlers();
+  }
+
   setWatchlistClickHandler(callback) {
     this._callback.clickWatchlist = callback;
     this.getElement().querySelector('.film-details__control-label--watchlist').addEventListener('click', this._watchlistClickHandler);

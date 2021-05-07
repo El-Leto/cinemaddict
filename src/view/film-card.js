@@ -1,5 +1,5 @@
 import { truncateText }  from '../utils/common.js';
-import { getTimeFromMins }  from '../utils/data.js';
+import { getTimeFromMins }  from '../utils/format-date.js';
 import AbstractView from './abstract.js';
 
 const MAX_DESCRIPTION_LENGTH = 140;
