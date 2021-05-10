@@ -11,4 +11,23 @@ const SortType = {
   BY_RATING: 'by-rating',
 };
 
-export { EMOJIS, SortType };
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+const UserAction = {
+  UPDATE: 'update',
+  ADD_COMMENT: 'add comment',
+  DELETE_COMMENT: 'delete',
+};
+
+const FilterType = {
+  ALL_MOVIES: 'All movies',
+  WATHCLIST: 'Watchlist',
+  FAVOURITES: 'Favorites',
+  HISTORY: 'History',
+};
+
+export { EMOJIS, SortType, UpdateType, UserAction, FilterType };

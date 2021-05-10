@@ -1,6 +1,7 @@
 import FilmCardView from '../view/film-card.js';
 import PopupView from '../view/popup.js';
 import { render, replace, remove } from '../utils/render.js';
+import { UserAction, UpdateType } from '../const.js';
 
 const Mode = {
   CLOSE: 'CLOSE',
@@ -20,6 +21,7 @@ export default class FilmCard {
     this._handleViewClick = this._handleViewClick.bind(this);
     this._buttonEscKeydownHandler = this._buttonEscKeydownHandler.bind(this);
     this._handlePopupCloseButtonClick = this._handlePopupCloseButtonClick.bind(this);
+    this._handlerDeleteComment = this._handlerDeleteComment.bind(this);
 
     this._handleWatchlistClick = this._handleWatchlistClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
@@ -80,6 +82,7 @@ export default class FilmCard {
     this._popupView.setFavoriteClickHandler(this._handleFavoriteClick);
     this._popupView.setWatchedClickHandler(this._handleWatchedClick);
     this._popupView.setCloseButtonClickHandler(this._handlePopupCloseButtonClick);
+    this._popupView.setDeleteComment(this._handlerDeleteComment);
   }
 
   _handleViewClick() {
@@ -106,6 +109,8 @@ export default class FilmCard {
 
   _handleWatchlistClick() {
     this._changeData(
+      UserAction.UPDATE,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
@@ -118,6 +123,8 @@ export default class FilmCard {
 
   _handleFavoriteClick() {
     this._changeData(
+      UserAction.UPDATE,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
@@ -130,6 +137,8 @@ export default class FilmCard {
 
   _handleWatchedClick() {
     this._changeData(
+      UserAction.UPDATE,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
@@ -142,6 +151,10 @@ export default class FilmCard {
 
   _handlePopupCloseButtonClick() {
     this._closeFilmDetail();
+  }
+
+  _handlerDeleteComment(id) {
+    //console.log(id); пытаюсь найти id
   }
 
   _buttonEscKeydownHandler(evt) {

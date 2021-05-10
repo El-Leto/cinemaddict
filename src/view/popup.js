@@ -35,6 +35,7 @@ export default class Popup extends SmartView {
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
     this._popupCloseButtonClickHandler = this._popupCloseButtonClickHandler.bind(this);
+    this._commentDeleteHandler = this._commentDeleteHandler.bind(this);
 
     this._emojiListChangeHandler = this._emojiListChangeHandler.bind(this);
     this._commentInputInputHandler = this._commentInputInputHandler.bind(this);
@@ -76,10 +77,15 @@ export default class Popup extends SmartView {
     this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._popupCloseButtonClickHandler);
   }
 
+  setDeleteComment (callback) {
+    this._callback.deleteComment = callback;
+  }
+
   _setInnerHandlers() {
     const item = this.getElement();
     item.querySelector('.film-details__emoji-list').addEventListener('change', this._emojiListChangeHandler);
     item.querySelector('.film-details__comment-input').addEventListener('input', this._commentInputInputHandler);
+    item.querySelector('.film-details__comments-list').addEventListener('click', this._commentDeleteHandler);
   }
 
   _watchlistClickHandler() {
@@ -96,6 +102,15 @@ export default class Popup extends SmartView {
 
   _popupCloseButtonClickHandler() {
     this._callback.clickCloseButton();
+  }
+
+  _commentDeleteHandler(evt) {
+    if (!evt.target.classList.contains('film-details__comment-delete')) {
+      return;
+    }
+    evt.preventDefault();
+
+    this._callback.deleteComment(evt.target.dataset.id); //не знаю как получить id комментария
   }
 
   _emojiListChangeHandler(evt) {
