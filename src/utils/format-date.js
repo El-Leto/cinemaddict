@@ -18,7 +18,7 @@ const getTimeFromMins = (mins) => {
 };
 
 const getCommentDate = (date) => {
-  return dayjs().to(dayjs(date));
+  return dayjs(date).fromNow();
 };
 
 export { formatReleaseDate, getTimeFromMins, getCommentDate };
