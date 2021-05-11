@@ -8,6 +8,8 @@ import FilmListPresenter from './presenter/films-list.js';
 import FilterPresenter from './presenter/filter.js';
 import FilmsModel from './model/films.js';
 import FilterModel from './model/filter.js';
+import CommentsModel from './model/comments.js';
+
 
 const MAX_FILM_COUNT = 20;
 
@@ -21,15 +23,17 @@ const films = new Array(MAX_FILM_COUNT).fill().map(generateFilm);
 const filmsModel = new FilmsModel();
 filmsModel.setFilms(films);
 
-const filterModel = new FilterModel();
+const commentsModel = new CommentsModel();
+commentsModel.setComments(films);
 
+const filterModel = new FilterModel();
 const siteMain = document.querySelector('.main');
 const header = document.querySelector('.header');
 
 render(header, new ProfileView());
 //render(siteMain, new MainNavigationView(filters, 'all'));
 
-const filmListPresenter = new FilmListPresenter(siteMain, filmsModel, filterModel);
+const filmListPresenter = new FilmListPresenter(siteMain, filmsModel, commentsModel, filterModel);
 const filterPresenter = new FilterPresenter(siteMain, filterModel, filmsModel);
 
 filterPresenter.init();

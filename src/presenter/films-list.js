@@ -12,9 +12,10 @@ import { filter } from '../utils/filter.js';
 const FILM_COUNT_PER_STEP = 5;
 
 export default class FilmList {
-  constructor(container, filmsModel, filterModel) {
+  constructor(container, filmsModel, commentsModel, filterModel) {
     this._container = container;
     this._filmsModel = filmsModel;
+    this._commentsModel = commentsModel;
     this._filterModel = filterModel;
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
     this._siteSortView = null;
@@ -31,6 +32,7 @@ export default class FilmList {
     this._handleModelEvent = this._handleModelEvent.bind(this);
 
     this._filmsModel.addObserver(this._handleModelEvent);
+    this._commentsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
 
     this._filmCardPresenter = {};
@@ -175,10 +177,10 @@ export default class FilmList {
         this._filmsModel.updateFilm(updateType, update);
         break;
       case UserAction.ADD_COMMENT:
-        this._tasksModel.addTask(updateType, update);
+        this._commentsModel.addComment(updateType, update);
         break;
       case UserAction.DELETE_COMMENT:
-        this._tasksModel.deleteTask(updateType, update);
+        this._commentsModel.deleteComment(updateType, update);
         break;
     }
   }

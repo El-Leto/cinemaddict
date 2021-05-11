@@ -110,7 +110,7 @@ export default class Popup extends SmartView {
     }
     evt.preventDefault();
 
-    this._callback.deleteComment(evt.target.dataset.id); //не знаю как получить id комментария
+    this._callback.deleteComment(evt.target.dataset.id);
   }
 
   _emojiListChangeHandler(evt) {
