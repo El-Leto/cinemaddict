@@ -155,12 +155,12 @@ export default class FilmCard {
   }
 
   _handleDeleteCommentClick(id) {
-    console.log(id);
+    //console.log(id);
     const updatedFilmCard = deepClone(this._film);
     const comment = updatedFilmCard.comments.filter((comment) => comment.id != id);
     updatedFilmCard.comments = comment;
 
-    console.log(comment);
+    //console.log(comment);
   }
 
   _buttonEscKeydownHandler(evt) {
