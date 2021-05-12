@@ -69,7 +69,7 @@ export default class FilmsList {
 
     this._currentSortType = sortType;
 
-    this._clear({resetRenderedTaskCount: true});
+    this._clear({resetRenderedFilmCount: true});
     this._render();
   }
 
