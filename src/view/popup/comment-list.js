@@ -6,7 +6,7 @@ const getAttributeChecked = (isChecked = false) => {
 };
 
 const createCommentTemplate = (comment) => {
-  const {id, emoji, text, author, date} = comment;
+  const {emoji, text, author, date} = comment;
 
   return (
     `<li class="film-details__comment">
@@ -18,7 +18,7 @@ const createCommentTemplate = (comment) => {
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${author}</span>
           <span class="film-details__comment-day">${getCommentDate(date)}</span>
-          <button class="film-details__comment-delete" data-id="${id}">Delete</button>
+          <button class="film-details__comment-delete">Delete</button>
         </p>
       </div>
     </li>`
@@ -45,7 +45,7 @@ const createCommentListTemplate = (film) => {
     comments, currentEmoji, currentTextComment,
   } = film;
 
-  const commentList = comments.map((comment) => createCommentTemplate(comment)).join('');
+  const commentList = comments.map(createCommentTemplate).join('');
   const emojiList = createEmojiTemplate(EMOJIS, currentEmoji);
 
   return (

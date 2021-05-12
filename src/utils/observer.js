@@ -1,19 +1,17 @@
 export default class Observer {
   constructor() {
-    this._observers = [];
+    this._monitorver = [];
   }
 
-  addObserver(observer) {
-    this._observers.push(observer);
+  addMonitorver(monitorver) {
+    this._monitorver.push(monitorver);
   }
 
-  removeObserver(observer) {
-    this._observers = this._observers
-      .filter(
-        (existedObserver) => existedObserver !== observer);
+  removeMonitorver(monitorver) {
+    this._monitorver = this._monitorver.filter((existedMonitorver) => existedMonitorver !== monitorver);
   }
 
   _notify(event, payload) {
-    this._observers.forEach((observer) => observer(event, payload));
+    this._monitorver.forEach((monitorver) => monitorver(event, payload));
   }
 }

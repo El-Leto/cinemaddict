@@ -1,8 +1,7 @@
 import FilmCardView from '../view/film-card.js';
 import PopupView from '../view/popup.js';
 import { render, replace, remove } from '../utils/render.js';
-import { UserAction, UpdateType } from '../const.js';
-import { deepClone } from '../utils/common.js';
+import {UserAction, UpdateType} from '../const.js';
 
 const Mode = {
   CLOSE: 'CLOSE',
@@ -22,7 +21,6 @@ export default class FilmCard {
     this._handleViewClick = this._handleViewClick.bind(this);
     this._buttonEscKeydownHandler = this._buttonEscKeydownHandler.bind(this);
     this._handlePopupCloseButtonClick = this._handlePopupCloseButtonClick.bind(this);
-    this._handleDeleteCommentClick = this._handleDeleteCommentClick.bind(this);
 
     this._handleWatchlistClick = this._handleWatchlistClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
@@ -83,7 +81,6 @@ export default class FilmCard {
     this._popupView.setFavoriteClickHandler(this._handleFavoriteClick);
     this._popupView.setWatchedClickHandler(this._handleWatchedClick);
     this._popupView.setCloseButtonClickHandler(this._handlePopupCloseButtonClick);
-    this._popupView.setDeleteComment(this._handleDeleteCommentClick);
   }
 
   _handleViewClick() {
@@ -152,15 +149,6 @@ export default class FilmCard {
 
   _handlePopupCloseButtonClick() {
     this._closeFilmDetail();
-  }
-
-  _handleDeleteCommentClick(id) {
-    //console.log(id);
-    const updatedFilmCard = deepClone(this._film);
-    const comment = updatedFilmCard.comments.filter((comment) => comment.id != id);
-    updatedFilmCard.comments = comment;
-
-    //console.log(comment);
   }
 
   _buttonEscKeydownHandler(evt) {
