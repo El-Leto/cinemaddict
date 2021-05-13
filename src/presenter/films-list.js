@@ -7,13 +7,15 @@ import FilmCardPresenter from './film-card.js';
 import SiteSort from '../view/site-sort.js';
 import { render, remove } from '../utils/render.js';
 import { SortType, UpdateType, UserAction } from '../const.js';
+import { filterTypeToFilterFilms } from '../utils/filter.js';
 
 const FILM_COUNT_PER_STEP = 5;
 
 export default class FilmsList {
-  constructor(container, filmsModel) {
+  constructor(container, filmsModel, filterModel) {
     this._container = container;
     this._filmsModel = filmsModel;
+    this._filterModel = filterModel;
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
     this._siteSortView = null;
     this._showMoreButtonView = null;
@@ -32,6 +34,7 @@ export default class FilmsList {
     this._currentSortType = SortType.DEFAULT;
 
     this._filmsModel.addMonitorver(this._handleModelEvent);
+    this._filterModel.addMonitorver(this._handleModelEvent);
   }
 
   init() {
@@ -39,14 +42,18 @@ export default class FilmsList {
   }
 
   _get() {
+    const filterType = this._filterModel.get();
+    const films = this._filmsModel.get().slice();
+    const filtredFilms = filterTypeToFilterFilms[filterType](films);
+
     switch (this._currentSortType) {
       case SortType.BY_DATE:
-        return this._filmsModel.get().slice().sort((filmA, filmB) => filmB.date - filmA.date);
+        return filtredFilms.sort((filmA, filmB) => filmB.date - filmA.date);
       case SortType.BY_RATING:
-        return this._filmsModel.get().slice().sort((filmA, filmB) => filmB.totalRating - filmA.totalRating);
+        return filtredFilms.sort((filmA, filmB) => filmB.totalRating - filmA.totalRating);
     }
 
-    return this._filmsModel.get();
+    return filtredFilms;
   }
 
   _handleModeChange() {
@@ -92,11 +99,12 @@ export default class FilmsList {
   }
 
   _handleShowMoreButtonClick() {
-    const filmCount = this._get().length;
+    const films = this._get();
+    const filmCount = films.length;
     const newRenderedFilmCount = Math.min(filmCount, this._renderedFilmCount + FILM_COUNT_PER_STEP);
-    const films = this._get().slice(this._renderedFilmCount, newRenderedFilmCount);
+    const filmsList = films.slice(this._renderedFilmCount, newRenderedFilmCount);
 
-    this._renderFilms(films);
+    this._renderFilms(filmsList);
     this._renderedFilmCount = newRenderedFilmCount;
 
     if (this._renderedFilmCount >= filmCount) {
@@ -119,7 +127,7 @@ export default class FilmsList {
     const films = this._get();
     const filmCount = films.length;
 
-    if (this._get().length === 0) {
+    if (this._filmsModel.isEmpty(films)) {
       render(this._container, this._mainContentView);
       this._renderNoFilms();
       return;
@@ -180,12 +188,10 @@ export default class FilmsList {
       case UpdateType.MINOR:
         this._clear();
         this._render();
-        this._filmCardPresenter[data.id]._handleViewClick();
         break;
       case UpdateType.MAJOR:
         this._clear({resetRenderedFilmCount: true, resetSortType: true});
         this._render();
-        this._filmCardPresenter[data.id]._handleViewClick();
         break;
     }
   }

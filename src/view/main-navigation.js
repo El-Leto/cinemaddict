@@ -1,23 +1,27 @@
-import { getСapitalLetter }  from '../utils/common.js';
 import AbstractView from './abstract.js';
+import {FilterType} from '../const.js';
 
-const createMainNavigationItemTemplate = (filter) => {
-  const {name, count} = filter;
+const createMainNavigationItemTemplate = (filter, currentFilterType) => {
+  const {type, name, count} = filter;
 
   return (
-    `<a href="#${name}" class="main-navigation__item">${getСapitalLetter(name)} <span class="main-navigation__item-count">${count}</span></a>`
+    `<a href="#${name}" class="main-navigation__item ${type === currentFilterType ? 'main-navigation__item--active' : ''}"
+    data-type ="${type}">
+    ${type === FilterType.ALL_MOVIES
+      ? FilterType.ALL_MOVIES
+      : `${name} <span class="main-navigation__item-count">${count} </span>`}
+  </a>`
   );
 };
 
-const createMainNavigationTemplate = (items) => {
+const createMainNavigationTemplate = (items, currentFilterType) => {
   const filterItemsTemplate = items
-    .map((filter, index) => createMainNavigationItemTemplate(filter, index === 0))
+    .map((filter) => createMainNavigationItemTemplate(filter, currentFilterType))
     .join('');
 
   return (
     `<nav class="main-navigation">
       <div class="main-navigation__items">
-        <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>
         ${filterItemsTemplate}
       </div>
       <a href="#stats" class="main-navigation__additional">Stats</a>
@@ -26,12 +30,25 @@ const createMainNavigationTemplate = (items) => {
 };
 
 export default class MainNavigation extends AbstractView {
-  constructor(filters) {
+  constructor(filters, currentFilterType) {
     super();
     this._filters = filters;
+    this._currentFilter = currentFilterType;
+
+    this._filterTypeClickHandler = this._filterTypeClickHandler.bind(this);
   }
 
   getTemplate() {
-    return createMainNavigationTemplate(this._filters);
+    return createMainNavigationTemplate(this._filters, this._currentFilter);
+  }
+
+  _filterTypeClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.clickFilterType(evt.target.dataset.type);
+  }
+
+  setFilterTypeClickHandler(callback) {
+    this._callback.clickFilterType = callback;
+    this.getElement().addEventListener('click', this._filterTypeClickHandler);
   }
 }

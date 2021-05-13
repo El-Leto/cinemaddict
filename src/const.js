@@ -27,7 +27,7 @@ const UserAction = {
 const FilterType = {
   ALL_MOVIES: 'All movies',
   WATHCLIST: 'Watchlist',
-  FAVOURITES: 'Favorites',
+  FAVORITES: 'Favorites',
   HISTORY: 'History',
 };
 

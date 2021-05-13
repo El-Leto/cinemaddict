@@ -29,4 +29,11 @@ export default class Films extends Observer {
 
     this._notify(updateType, update);
   }
+
+  isEmpty(items) {
+    if (items.length === 0) {
+      return true;
+    }
+    return false;
+  }
 }
