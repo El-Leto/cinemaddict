@@ -33,8 +33,8 @@ export default class FilmsList {
     this._filmCardPresenter = {};
     this._currentSortType = SortType.DEFAULT;
 
-    this._filmsModel.addMonitorver(this._handleModelEvent);
-    this._filterModel.addMonitorver(this._handleModelEvent);
+    this._filmsModel.subscribe(this._handleModelEvent);
+    this._filterModel.subscribe(this._handleModelEvent);
   }
 
   init() {
@@ -102,9 +102,9 @@ export default class FilmsList {
     const films = this._get();
     const filmCount = films.length;
     const newRenderedFilmCount = Math.min(filmCount, this._renderedFilmCount + FILM_COUNT_PER_STEP);
-    const filmsList = films.slice(this._renderedFilmCount, newRenderedFilmCount);
+    const filmsLists = films.slice(this._renderedFilmCount, newRenderedFilmCount);
 
-    this._renderFilms(filmsList);
+    this._renderFilms(filmsLists);
     this._renderedFilmCount = newRenderedFilmCount;
 
     if (this._renderedFilmCount >= filmCount) {
@@ -124,14 +124,14 @@ export default class FilmsList {
   }
 
   _render() {
-    const films = this._get();
-    const filmCount = films.length;
-
-    if (this._filmsModel.isEmpty(films)) {
+    if (this._filmsModel.isEmpty()) {
       render(this._container, this._mainContentView);
       this._renderNoFilms();
       return;
     }
+
+    const films = this._get();
+    const filmCount = films.length;
 
     this._renderSort();
     this._renderFilms(films.slice(0, Math.min(filmCount, this._renderedFilmCount)));
@@ -146,7 +146,6 @@ export default class FilmsList {
   }
 
   _clear({resetRenderedFilmCount = false, resetSortType = false} = {}) {
-    const filmCount = this._get().length;
     Object
       .values(this._filmCardPresenter)
       .forEach((presenter) => presenter.destroy());
@@ -156,7 +155,7 @@ export default class FilmsList {
     remove(this._noFilmsView);
     remove(this._showMoreButtonView);
 
-    this._renderedFilmCount = (resetRenderedFilmCount) ? FILM_COUNT_PER_STEP : Math.min(filmCount, this._renderedFilmCount);
+    this._renderedFilmCount = resetRenderedFilmCount ? FILM_COUNT_PER_STEP : Math.min(this._get().length, this._renderedFilmCount);
 
     if (resetSortType) {
       this._currentSortType = SortType.DEFAULT;

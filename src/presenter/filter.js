@@ -6,31 +6,31 @@ import {FilterType, UpdateType} from '../const.js';
 export default class Filter {
   constructor(container, filterModel, filmsModel) {
     this._container = container;
-    this._itemModel = filterModel;
+    this._model = filterModel;
     this._filmsModel = filmsModel;
 
-    this._item = null;
+    this._view = null;
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleItemTypeClick = this._handleItemTypeClick.bind(this);
 
-    this._filmsModel.addMonitorver(this._handleModelEvent);
-    this._itemModel.addMonitorver(this._handleModelEvent);
+    this._filmsModel.subscribe(this._handleModelEvent);
+    this._model.subscribe(this._handleModelEvent);
   }
 
   init() {
     const filters = this._get();
-    const prevFilter = this._item;
+    const prevFilter = this._view;
 
-    this._item = new MainNavigationView(filters, this._itemModel.get());
-    this._item.setFilterTypeClickHandler(this._handleItemTypeClick);
+    this._view = new MainNavigationView(filters, this._model.get());
+    this._view.setFilterTypeClickHandler(this._handleItemTypeClick);
 
     if (prevFilter === null) {
-      render(this._container, this._item);
+      render(this._container, this._view);
       return;
     }
 
-    replace(this._item, prevFilter);
+    replace(this._view, prevFilter);
     remove(prevFilter);
   }
 
@@ -39,11 +39,11 @@ export default class Filter {
   }
 
   _handleItemTypeClick(filterType) {
-    if (this._itemModel.get() === filterType) {
+    if (this._model.get() === filterType) {
       return;
     }
 
-    this._itemModel.set(UpdateType.MAJOR, filterType);
+    this._model.set(UpdateType.MAJOR, filterType);
   }
 
   _get() {
@@ -53,7 +53,7 @@ export default class Filter {
       {
         type: FilterType.ALL_MOVIES,
         name: 'All Movies',
-        count: filterTypeToFilterFilms[FilterType.ALL_MOVIES](films).length,
+        count: '',
       },
       {
         type: FilterType.WATHCLIST,

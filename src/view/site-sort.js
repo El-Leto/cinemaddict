@@ -1,12 +1,16 @@
 import AbstractView from './abstract.js';
 import { SortType } from '../const.js';
 
+const createSortTemplate = (condition, type, name) => (
+  `<li><a href="#" class="sort__button ${condition}" data-sort-type="${type}">Sort by ${name}</a></li>`
+);
+
 const createSiteSortTemplate = (inicialSortType) => {
   return (
     `<ul class="sort">
-      <li><a href="#" class="sort__button ${inicialSortType === SortType.DEFAULT ? 'sort__button--active' : ''}" data-sort-type="${SortType.DEFAULT}">Sort by default</a></li>
-      <li><a href="#" class="sort__button ${inicialSortType === SortType.BY_DATE ? 'sort__button--active' : ''}" data-sort-type="${SortType.BY_DATE}">Sort by date</a></li>
-      <li><a href="#" class="sort__button ${inicialSortType === SortType.BY_RATING ? 'sort__button--active' : ''}" data-sort-type="${SortType.BY_RATING}">Sort by rating</a></li>
+      ${createSortTemplate(`${inicialSortType === SortType.DEFAULT ? 'sort__button--active' : ''}`, `${SortType.DEFAULT}`, 'default')}
+      ${createSortTemplate(`${inicialSortType === SortType.BY_DATE ? 'sort__button--active' : ''}`, `${SortType.BY_DATE}`, 'date')}
+      ${createSortTemplate(`${inicialSortType === SortType.BY_RATING ? 'sort__button--active' : ''}`, `${SortType.BY_RATING}`, 'rating')}
     </ul>`
   );
 };
