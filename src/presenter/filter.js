@@ -6,31 +6,31 @@ import {FilterType, UpdateType} from '../const.js';
 export default class Filter {
   constructor(container, filterModel, filmsModel) {
     this._container = container;
-    this._filterModel = filterModel;
+    this._itemModel = filterModel;
     this._filmsModel = filmsModel;
 
-    this._filter = null;
+    this._item = null;
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
-    this._handleFilterTypeClick = this._handleFilterTypeClick.bind(this);
+    this._handleItemTypeClick = this._handleItemTypeClick.bind(this);
 
     this._filmsModel.addMonitorver(this._handleModelEvent);
-    this._filterModel.addMonitorver(this._handleModelEvent);
+    this._itemModel.addMonitorver(this._handleModelEvent);
   }
 
   init() {
     const filters = this._get();
-    const prevFilter = this._filter;
+    const prevFilter = this._item;
 
-    this._filter = new MainNavigationView(filters, this._filterModel.get());
-    this._filter.setFilterTypeClickHandler(this._handleFilterTypeClick);
+    this._item = new MainNavigationView(filters, this._itemModel.get());
+    this._item.setFilterTypeClickHandler(this._handleItemTypeClick);
 
     if (prevFilter === null) {
-      render(this._container, this._filter);
+      render(this._container, this._item);
       return;
     }
 
-    replace(this._filter, prevFilter);
+    replace(this._item, prevFilter);
     remove(prevFilter);
   }
 
@@ -38,12 +38,12 @@ export default class Filter {
     this.init();
   }
 
-  _handleFilterTypeClick(filterType) {
-    if (this._filterModel.get() === filterType) {
+  _handleItemTypeClick(filterType) {
+    if (this._itemModel.get() === filterType) {
       return;
     }
 
-    this._filterModel.set(UpdateType.MAJOR, filterType);
+    this._itemModel.set(UpdateType.MAJOR, filterType);
   }
 
   _get() {

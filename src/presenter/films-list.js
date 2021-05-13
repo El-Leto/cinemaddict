@@ -168,9 +168,6 @@ export default class FilmsList {
       case UserAction.UPDATE:
         this._filmsModel.update(updateType, update);
         break;
-      // case UserAction.UPDATE_COMMENTS:
-      //   this._commentsModel.update(updateType, update);
-      //   break;
       // case UserAction.ADD_COMMENT:
       //   this._commentsModel.add(updateType, update);
       //   break;

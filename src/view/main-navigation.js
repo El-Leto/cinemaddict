@@ -1,11 +1,11 @@
 import AbstractView from './abstract.js';
 import {FilterType} from '../const.js';
 
-const createMainNavigationItemTemplate = (filter, currentFilterType) => {
+const createMainNavigationItemTemplate = (filter, inicialFilterType) => {
   const {type, name, count} = filter;
 
   return (
-    `<a href="#${name}" class="main-navigation__item ${type === currentFilterType ? 'main-navigation__item--active' : ''}"
+    `<a href="#${name}" class="main-navigation__item ${type === inicialFilterType ? 'main-navigation__item--active' : ''}"
     data-type ="${type}">
     ${type === FilterType.ALL_MOVIES
       ? FilterType.ALL_MOVIES
@@ -14,9 +14,9 @@ const createMainNavigationItemTemplate = (filter, currentFilterType) => {
   );
 };
 
-const createMainNavigationTemplate = (items, currentFilterType) => {
+const createMainNavigationTemplate = (items, inicialFilterType) => {
   const filterItemsTemplate = items
-    .map((filter) => createMainNavigationItemTemplate(filter, currentFilterType))
+    .map((filter) => createMainNavigationItemTemplate(filter, inicialFilterType))
     .join('');
 
   return (
@@ -30,25 +30,25 @@ const createMainNavigationTemplate = (items, currentFilterType) => {
 };
 
 export default class MainNavigation extends AbstractView {
-  constructor(filters, currentFilterType) {
+  constructor(filters, inicialFilterType) {
     super();
     this._filters = filters;
-    this._currentFilter = currentFilterType;
+    this._inicialFilterType = inicialFilterType;
 
     this._filterTypeClickHandler = this._filterTypeClickHandler.bind(this);
   }
 
   getTemplate() {
-    return createMainNavigationTemplate(this._filters, this._currentFilter);
-  }
-
-  _filterTypeClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.clickFilterType(evt.target.dataset.type);
+    return createMainNavigationTemplate(this._filters, this._inicialFilterType);
   }
 
   setFilterTypeClickHandler(callback) {
     this._callback.clickFilterType = callback;
     this.getElement().addEventListener('click', this._filterTypeClickHandler);
+  }
+
+  _filterTypeClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.clickFilterType(evt.target.dataset.type);
   }
 }
