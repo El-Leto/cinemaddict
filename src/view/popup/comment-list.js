@@ -15,7 +15,7 @@ const createCommentTemplate = (comment) => {
         <img src="./images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">
       </span>
       <div>
-        <p class="film-details__comment-text">${text !== null ? he.encode(text) : ''}</p>
+        <p class="film-details__comment-text">${text.length !== 0 ? he.encode(text) : ''}</p>
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${author}</span>
           <span class="film-details__comment-day">${getCommentDate(date)}</span>
@@ -59,7 +59,7 @@ const createCommentListTemplate = (film) => {
       ${currentEmoji !== '' ? `<img src="images/emoji/${currentEmoji}.png" width="55" height="55" alt="emoji-${currentEmoji}">` : ''}
       </div>
       <label class="film-details__comment-label">
-        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${currentTextComment !== null ? he.encode(currentTextComment) : ''}</textarea>
+        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${currentTextComment.length !== 0 ? he.encode(currentTextComment) : ''}</textarea>
       </label>
       <div class="film-details__emoji-list">
         ${emojiList}

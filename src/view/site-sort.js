@@ -1,16 +1,19 @@
 import AbstractView from './abstract.js';
 import { SortType } from '../const.js';
 
-const createSortTemplate = (condition, type, name) => (
-  `<li><a href="#" class="sort__button ${condition}" data-sort-type="${type}">Sort by ${name}</a></li>`
-);
+const createSortTemplate = (type, name, isActive = false) => {
+  const activeClass = isActive ? 'sort__button--active' : '';
+  return (
+    `<li><a href="#" class="sort__button ${activeClass}" data-sort-type="${type}">Sort by ${name}</a></li>`
+  );
+};
 
 const createSiteSortTemplate = (inicialSortType) => {
   return (
     `<ul class="sort">
-      ${createSortTemplate(`${inicialSortType === SortType.DEFAULT ? 'sort__button--active' : ''}`, `${SortType.DEFAULT}`, 'default')}
-      ${createSortTemplate(`${inicialSortType === SortType.BY_DATE ? 'sort__button--active' : ''}`, `${SortType.BY_DATE}`, 'date')}
-      ${createSortTemplate(`${inicialSortType === SortType.BY_RATING ? 'sort__button--active' : ''}`, `${SortType.BY_RATING}`, 'rating')}
+      ${createSortTemplate(SortType.DEFAULT, 'default', inicialSortType === SortType.DEFAULT)}
+      ${createSortTemplate(SortType.BY_DATE, 'date', inicialSortType === SortType.BY_DATE)} 
+      ${createSortTemplate(SortType.BY_RATING, 'rating', inicialSortType === SortType.BY_RATING)}
     </ul>`
   );
 };

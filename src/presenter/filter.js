@@ -53,7 +53,7 @@ export default class Filter {
       {
         type: FilterType.ALL_MOVIES,
         name: 'All Movies',
-        count: '',
+        count: films.length,
       },
       {
         type: FilterType.WATHCLIST,

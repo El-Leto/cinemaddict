@@ -44,11 +44,13 @@ export default class MainNavigation extends AbstractView {
 
   setFilterTypeClickHandler(callback) {
     this._callback.clickFilterType = callback;
-    this.getElement().addEventListener('click', this._filterTypeClickHandler);
+    this.getElement().querySelector('.main-navigation__items').addEventListener('click', this._filterTypeClickHandler);
   }
 
   _filterTypeClickHandler(evt) {
     evt.preventDefault();
+    if (evt.target.tagName != 'A')
+      return;
     this._callback.clickFilterType(evt.target.dataset.type);
   }
 }

@@ -3,15 +3,15 @@ export default class Observer {
     this._listeners = [];
   }
 
-  subscribe(listeners) {
-    this._listeners.push(listeners);
+  subscribe(listener) {
+    this._listeners.push(listener);
   }
 
-  unsubscribe(listeners) {
-    this._listeners = this._listeners.filter((existedListeners) => existedListeners !== listeners);
+  unsubscribe(listener) {
+    this._listeners = this._listeners.filter((existedListener) => existedListener !== listener);
   }
 
   _notify(action, payload) {
-    this._listeners.forEach((listeners) => listeners(action, payload));
+    this._listeners.forEach((listener) => listener(action, payload));
   }
 }

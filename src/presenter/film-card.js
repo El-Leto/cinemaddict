@@ -66,7 +66,7 @@ export default class FilmCard {
 
   destroy() {
     remove(this._view);
-    //this._closeFilmDetail();
+    this._closeFilmDetail();
   }
 
   resetView() {

@@ -53,7 +53,9 @@ export default class FilmsList {
         return filtredFilms.sort((filmA, filmB) => filmB.totalRating - filmA.totalRating);
     }
 
-    return filtredFilms;
+    if (filtredFilms.length === 0 ) {
+      this._renderNoFilms();
+    } return filtredFilms;
   }
 
   _handleModeChange() {
@@ -102,9 +104,9 @@ export default class FilmsList {
     const films = this._get();
     const filmCount = films.length;
     const newRenderedFilmCount = Math.min(filmCount, this._renderedFilmCount + FILM_COUNT_PER_STEP);
-    const filmsLists = films.slice(this._renderedFilmCount, newRenderedFilmCount);
+    const nextFilms = films.slice(this._renderedFilmCount, newRenderedFilmCount);
 
-    this._renderFilms(filmsLists);
+    this._renderFilms(nextFilms);
     this._renderedFilmCount = newRenderedFilmCount;
 
     if (this._renderedFilmCount >= filmCount) {
@@ -133,6 +135,12 @@ export default class FilmsList {
     const films = this._get();
     const filmCount = films.length;
 
+    if (filmCount === 0) {
+      remove(this._allFilmsView);
+      this._renderNoFilms();
+      return;
+    }
+
     this._renderSort();
     this._renderFilms(films.slice(0, Math.min(filmCount, this._renderedFilmCount)));
 
@@ -155,7 +163,9 @@ export default class FilmsList {
     remove(this._noFilmsView);
     remove(this._showMoreButtonView);
 
-    this._renderedFilmCount = resetRenderedFilmCount ? FILM_COUNT_PER_STEP : Math.min(this._get().length, this._renderedFilmCount);
+    const films = [{}];
+
+    this._renderedFilmCount = resetRenderedFilmCount ? FILM_COUNT_PER_STEP : Math.min(films.length + FILM_COUNT_PER_STEP, this._renderedFilmCount);
 
     if (resetSortType) {
       this._currentSortType = SortType.DEFAULT;
