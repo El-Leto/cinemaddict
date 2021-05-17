@@ -5,4 +5,3 @@ export const filterTypeToFilterFilms = {
   [FilterType.HISTORY]: (films) => films.filter((film) => film.isWatched),
   [FilterType.FAVORITES]: (films) => films.filter((film) => film.isFavorite),
 };
-

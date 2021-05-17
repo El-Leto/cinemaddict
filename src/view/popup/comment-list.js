@@ -25,7 +25,6 @@ const createCommentTemplate = (comment) => {
     </li>`
   );
 };
-//${inicialSortType === SortType.DEFAULT ? 'sort__button--active' : ''}
 
 const createEmojiTemplate = (emoji, currentEmoji) => {
 

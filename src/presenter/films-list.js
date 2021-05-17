@@ -4,12 +4,19 @@ import AllFilmsListView from '../view/all-films-list.js';
 import ShowMoreButtonView from '../view/show-more-button.js';
 import NoFilmsView from '../view/no-films.js';
 import FilmCardPresenter from './film-card.js';
+import FilmPopup from './popup.js';
 import SiteSort from '../view/site-sort.js';
 import { render, remove } from '../utils/render.js';
-import { SortType, UpdateType, UserAction } from '../const.js';
+import { FilterType, SortType, UpdateType, UserAction } from '../const.js';
 import { filterTypeToFilterFilms } from '../utils/filter.js';
 
 const FILM_COUNT_PER_STEP = 5;
+
+const actionTypeToFilterType = {
+  [UserAction.UPDATE_WATCHED]: FilterType.HISTORY,
+  [UserAction.UPDATE_FAVORITE]: FilterType.FAVORITES,
+  [UserAction.UPDATE_WATCHLIST]: FilterType.WATHCLIST,
+};
 
 export default class FilmsList {
   constructor(container, filmsModel, filterModel) {
@@ -31,6 +38,7 @@ export default class FilmsList {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
     this._filmCardPresenter = {};
+    this._popupPresenter = null;
     this._currentSortType = SortType.DEFAULT;
 
     this._filmsModel.subscribe(this._handleModelEvent);
@@ -58,10 +66,32 @@ export default class FilmsList {
     } return filtredFilms;
   }
 
-  _handleModeChange() {
-    Object
-      .values(this._filmCardPresenter)
-      .forEach((presenter) => presenter.resetView());
+  _handleModeChange(film) {
+    this._renderPopup(film);
+  }
+
+  _renderPopup(film) {
+    if (this._popupPresenter === null) {
+      this._popupPresenter = new FilmPopup(document.body, this._handleViewAction);
+    }
+
+    this._popupPresenter.init(film);
+  }
+
+  _updatePopup(film) {
+    const presenter = this._popupPresenter;
+
+    if (presenter !== null && presenter.getId() === film.id) {
+      presenter.init(film);
+    }
+  }
+
+  _updateCard(film) {
+    const presenter = this._filmCardPresenter;
+
+    if (presenter !== null) {
+      presenter.init(film);
+    }
   }
 
   _renderFilmCard(film) {
@@ -174,9 +204,17 @@ export default class FilmsList {
 
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
-      case UserAction.UPDATE:
-        this._filmsModel.update(updateType, update);
+      case UserAction.UPDATE_WATCHED:
+      case UserAction.UPDATE_FAVORITE:
+      case UserAction.UPDATE_WATCHLIST:
+        this._filmsModel.update(
+          this._filterModel.get() === actionTypeToFilterType[actionType] ? UpdateType.MINOR : updateType,
+          update,
+        );
         break;
+      // case UserAction.UPDATE:
+      //   this._filmsModel.update(updateType, update);
+      //   break;
       // case UserAction.ADD_COMMENT:
       //   this._commentsModel.add(updateType, update);
       //   break;
@@ -189,9 +227,11 @@ export default class FilmsList {
   _handleModelEvent(updateType, data) {
     switch (updateType) {
       case UpdateType.PATCH:
-        this._filmCardPresenter[data.id].init(data);
+        this._updateCard(data);
+        this._updatePopup(data);
         break;
       case UpdateType.MINOR:
+        this._updatePopup(data);
         this._clear();
         this._render();
         break;
