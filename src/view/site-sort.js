@@ -1,25 +1,34 @@
 import AbstractView from './abstract.js';
 import { SortType } from '../const.js';
 
-const createSiteSortTemplate = () => {
+const createSortTemplate = (type, name, isActive = false) => {
+  const activeClass = isActive ? 'sort__button--active' : '';
+  return (
+    `<li><a href="#" class="sort__button ${activeClass}" data-sort-type="${type}">Sort by ${name}</a></li>`
+  );
+};
+
+const createSiteSortTemplate = (inicialSortType) => {
   return (
     `<ul class="sort">
-      <li><a href="#" class="sort__button sort__button--active" data-sort-type="${SortType.DEFAULT}">Sort by default</a></li>
-      <li><a href="#" class="sort__button" data-sort-type="${SortType.BY_DATE}">Sort by date</a></li>
-      <li><a href="#" class="sort__button" data-sort-type="${SortType.BY_RATING}">Sort by rating</a></li>
+      ${createSortTemplate(SortType.DEFAULT, 'default', inicialSortType === SortType.DEFAULT)}
+      ${createSortTemplate(SortType.BY_DATE, 'date', inicialSortType === SortType.BY_DATE)} 
+      ${createSortTemplate(SortType.BY_RATING, 'rating', inicialSortType === SortType.BY_RATING)}
     </ul>`
   );
 };
 
 export default class SiteSort extends AbstractView {
-  constructor() {
+  constructor(inicialSortType) {
     super();
+
+    this._inicialSortType = inicialSortType;
 
     this._sortTypeClickHandler = this._sortTypeClickHandler.bind(this);
   }
 
   getTemplate() {
-    return createSiteSortTemplate();
+    return createSiteSortTemplate(this._inicialSortType);
   }
 
   setSortTypeClickHandler(callback) {

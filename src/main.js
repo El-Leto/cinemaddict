@@ -1,12 +1,13 @@
-import MainNavigationView from './view/main-navigation.js';
 import ProfileView from './view/profile.js';
 //import TopRatedFilmsListView from './view/top-rated-films-list.js';
 //import MostCommentedFilmsListView from './view/most-commented-films-list.js';
 import StatisticsView from './view/statistics.js';
 import { generateFilm } from './mock/film.js';
-import { generateFilter } from './mock/filter.js';
 import { render } from './utils/render.js';
-import FilmListPresenter from './presenter/films-list.js';
+import FilmsListPresenter from './presenter/films-list.js';
+import FilterPresenter from './presenter/filter.js';
+import FilmsModel from './model/films.js';
+import FilterModel from './model/filter.js';
 
 const MAX_FILM_COUNT = 20;
 
@@ -16,17 +17,22 @@ const MAX_FILM_COUNT = 20;
 // };
 
 const films = new Array(MAX_FILM_COUNT).fill().map(generateFilm);
-const filters = generateFilter(films);
+
+const filmsModel = new FilmsModel();
+filmsModel.set(films);
+
+const filterModel = new FilterModel();
 
 const siteMain = document.querySelector('.main');
 const header = document.querySelector('.header');
 
 render(header, new ProfileView());
-render(siteMain, new MainNavigationView(filters));
 
-const filmListPresenter = new FilmListPresenter(siteMain);
+const filmsListPresenter = new FilmsListPresenter(siteMain, filmsModel, filterModel);
+const filterPresenter = new FilterPresenter(siteMain, filterModel, filmsModel);
 
-filmListPresenter.init(films);
+filterPresenter.init();
+filmsListPresenter.init();
 
 // const createTopRatedFilmsListTemplate = () => {
 //   const allFilmsListView = new AllFilmsListView();

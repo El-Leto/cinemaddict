@@ -11,4 +11,26 @@ const SortType = {
   BY_RATING: 'by-rating',
 };
 
-export { EMOJIS, SortType };
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+const UserAction = {
+  UPDATE_WATCHED: 'UPDATE_WATCHED',
+  UPDATE_FAVORITE: 'UPDATE_FAVORITE',
+  UPDATE_WATCHLIST: 'UPDATE_WATCHLIST',
+  UPDATE_COMMENTS: 'UPDATE_COMMENTS',
+  ADD_COMMENT: 'ADD_COMMENT',
+  DELETE_COMMENT: 'DELETE_COMMENT',
+};
+
+const FilterType = {
+  ALL_MOVIES: 'All movies',
+  WATHCLIST: 'Watchlist',
+  FAVORITES: 'Favorites',
+  HISTORY: 'History',
+};
+
+export { EMOJIS, SortType, UpdateType, UserAction, FilterType };

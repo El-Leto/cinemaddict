@@ -77,9 +77,13 @@ export default class Popup extends SmartView {
   }
 
   _setInnerHandlers() {
-    const item = this.getElement();
-    item.querySelector('.film-details__emoji-list').addEventListener('change', this._emojiListChangeHandler);
-    item.querySelector('.film-details__comment-input').addEventListener('input', this._commentInputInputHandler);
+    const node = this.getElement();
+    node.querySelector('.film-details__emoji-list').addEventListener('change', this._emojiListChangeHandler);
+    node.querySelector('.film-details__comment-input').addEventListener('input', this._commentInputInputHandler);
+    node.querySelector('.film-details__control-label--watchlist').addEventListener('click', this._watchlistClickHandler);
+    node.querySelector('.film-details__control-label--favorite').addEventListener('click', this._favoriteClickHandler);
+    node.querySelector('.film-details__control-label--watched').addEventListener('click', this._watchedClickHandler);
+    node.querySelector('.film-details__close-btn').addEventListener('click', this._popupCloseButtonClickHandler);
   }
 
   _watchlistClickHandler() {
