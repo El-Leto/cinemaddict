@@ -35,7 +35,7 @@ export default class MainNavigation extends AbstractView {
     this._filters = filters;
     this._inicialFilterType = inicialFilterType;
 
-    this._filterTypeClickHandler = this._filterTypeClickHandler.bind(this);
+    this._itemsClickHandler = this._itemsClickHandler.bind(this);
   }
 
   getTemplate() {
@@ -44,10 +44,10 @@ export default class MainNavigation extends AbstractView {
 
   setFilterTypeClickHandler(callback) {
     this._callback.clickFilterType = callback;
-    this.getElement().querySelector('.main-navigation__items').addEventListener('click', this._filterTypeClickHandler);
+    this.getElement().querySelector('.main-navigation__items').addEventListener('click', this._itemsClickHandler);
   }
 
-  _filterTypeClickHandler(evt) {
+  _itemsClickHandler(evt) {
     evt.preventDefault();
     if (evt.target.tagName != 'A') {
       return;

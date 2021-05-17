@@ -50,7 +50,7 @@ export default class FilmsList {
   }
 
   _get() {
-    const filterType = this._filterModel.get();
+    const filterType = this._filterModel.getType();
     const films = this._filmsModel.get().slice();
     const filtredFilms = filterTypeToFilterFilms[filterType](films);
 
@@ -87,7 +87,7 @@ export default class FilmsList {
   }
 
   _updateCard(film) {
-    const presenter = this._filmCardPresenter;
+    const presenter = this._filmCardPresenter[film.id] || null;
 
     if (presenter !== null) {
       presenter.init(film);
@@ -171,8 +171,8 @@ export default class FilmsList {
       return;
     }
 
-    this._renderSort();
     this._renderFilms(films.slice(0, Math.min(filmCount, this._renderedFilmCount)));
+    this._renderSort();
 
     render(this._container, this._mainContentView);
     render(this._mainContentView, this._allFilmsView);
@@ -193,9 +193,7 @@ export default class FilmsList {
     remove(this._noFilmsView);
     remove(this._showMoreButtonView);
 
-    const films = [{}];
-
-    this._renderedFilmCount = resetRenderedFilmCount ? FILM_COUNT_PER_STEP : Math.min(films.length + FILM_COUNT_PER_STEP, this._renderedFilmCount);
+    this._renderedFilmCount = resetRenderedFilmCount ? FILM_COUNT_PER_STEP : Math.min(this._get().length + FILM_COUNT_PER_STEP, this._renderedFilmCount);
 
     if (resetSortType) {
       this._currentSortType = SortType.DEFAULT;
@@ -208,7 +206,7 @@ export default class FilmsList {
       case UserAction.UPDATE_FAVORITE:
       case UserAction.UPDATE_WATCHLIST:
         this._filmsModel.update(
-          this._filterModel.get() === actionTypeToFilterType[actionType] ? UpdateType.MINOR : updateType,
+          this._filterModel.getType() === actionTypeToFilterType[actionType] ? UpdateType.MINOR : updateType,
           update,
         );
         break;

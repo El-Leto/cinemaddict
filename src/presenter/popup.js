@@ -15,7 +15,7 @@ export default class Popup {
     this._view = null;
 
     this._buttonEscKeydownHandler = this._buttonEscKeydownHandler.bind(this);
-    this._handlePopupCloseButtonClick = this._handlePopupCloseButtonClick.bind(this);
+    this._handleCloseButtonClick = this._handleCloseButtonClick.bind(this);
 
     this._handleWatchlistClick = this._handleWatchlistClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
@@ -51,15 +51,14 @@ export default class Popup {
     this._view.setWatchlistClickHandler(this._handleWatchlistClick);
     this._view.setFavoriteClickHandler(this._handleFavoriteClick);
     this._view.setWatchedClickHandler(this._handleWatchedClick);
-    this._view.setCloseButtonClickHandler(this._handlePopupCloseButtonClick);
+    this._view.setCloseButtonClickHandler(this._handleCloseButtonClick);
   }
 
-  _closeFilmDetail() {
+  _close() {
     remove(this._view);
     this._view = null;
     document.body.classList.remove(HIDE_CLASS);
     document.removeEventListener('keydown', this._buttonEscKeydownHandler);
-    //this._mode = Mode.CLOSE;
   }
 
   _handleWatchlistClick() {
@@ -104,14 +103,14 @@ export default class Popup {
     );
   }
 
-  _handlePopupCloseButtonClick() {
-    this._closeFilmDetail();
+  _handleCloseButtonClick() {
+    this._close();
   }
 
   _buttonEscKeydownHandler(evt) {
-    if (isEscEvent) {
+    if (isEscEvent(evt)) {
       evt.preventDefault();
-      this._closeFilmDetail();
+      this._close();
     }
   }
 }

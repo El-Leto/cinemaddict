@@ -22,7 +22,7 @@ export default class Filter {
     const filters = this._get();
     const prevFilter = this._view;
 
-    this._view = new MainNavigationView(filters, this._model.get());
+    this._view = new MainNavigationView(filters, this._model.getType());
     this._view.setFilterTypeClickHandler(this._handleItemTypeClick);
 
     if (prevFilter === null) {
@@ -39,7 +39,7 @@ export default class Filter {
   }
 
   _handleItemTypeClick(filterType) {
-    if (this._model.get() === filterType) {
+    if (this._model.getType() === filterType) {
       return;
     }
 
