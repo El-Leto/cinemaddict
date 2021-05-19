@@ -16,6 +16,7 @@ const createControlButtonTemplate = (name, title, isActive = false) => {
 };
 
 const createFilmCardTemplate = (film) => {
+  const {filmInfo, userDetails, comments} = film;
   const {
     title,
     totalRating,
@@ -24,11 +25,13 @@ const createFilmCardTemplate = (film) => {
     genres,
     poster,
     description,
-    comments,
+  } = filmInfo;
+
+  const {
     isWatchlist,
     isWatched,
     isFavorite,
-  } = film;
+  } = userDetails;
 
   return (
     `<article class="film-card">

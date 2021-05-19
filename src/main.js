@@ -1,4 +1,5 @@
 import ProfileView from './view/profile.js';
+import StatsView from './view/stats.js';
 //import TopRatedFilmsListView from './view/top-rated-films-list.js';
 //import MostCommentedFilmsListView from './view/most-commented-films-list.js';
 import StatisticsView from './view/statistics.js';
@@ -26,13 +27,27 @@ const filterModel = new FilterModel();
 const siteMain = document.querySelector('.main');
 const header = document.querySelector('.header');
 
+const statsView = new StatsView(films);
+
 render(header, new ProfileView());
 
 const filmsListPresenter = new FilmsListPresenter(siteMain, filmsModel, filterModel);
-const filterPresenter = new FilterPresenter(siteMain, filterModel, filmsModel);
+const filterPresenter = new FilterPresenter(siteMain, filterModel, filmsModel, statsView, filmsListPresenter);
 
 filterPresenter.init();
 filmsListPresenter.init();
+//filmsListPresenter.show();
+
+render(siteMain, statsView);
+statsView.hide();
+
+// const handleStatsClick = () => {
+//   filmsListPresenter.hide();
+//   statsView.show();
+// };
+
+// statsView.setStatsClickHandler(handleStatsClick);
+
 
 // const createTopRatedFilmsListTemplate = () => {
 //   const allFilmsListView = new AllFilmsListView();

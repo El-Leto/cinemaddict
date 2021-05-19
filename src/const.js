@@ -33,4 +33,6 @@ const FilterType = {
   HISTORY: 'History',
 };
 
-export { EMOJIS, SortType, UpdateType, UserAction, FilterType };
+const VISUALLY_HIDDEN = 'visually-hidden';
+
+export { EMOJIS, SortType, UpdateType, UserAction, FilterType, VISUALLY_HIDDEN };

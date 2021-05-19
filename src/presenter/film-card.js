@@ -63,7 +63,7 @@ export default class FilmCard {
         {},
         this._film,
         {
-          isWatchlist: !this._film.isWatchlist,
+          isWatchlist: !this._film.userDetails.isWatchlist,
         },
       ),
     );
@@ -77,7 +77,7 @@ export default class FilmCard {
         {},
         this._film,
         {
-          isFavorite: !this._film.isFavorite,
+          isFavorite: !this._film.userDetails.isFavorite,
         },
       ),
     );
@@ -91,7 +91,7 @@ export default class FilmCard {
         {},
         this._film,
         {
-          isWatched: !this._film.isWatched,
+          isWatched: !this._film.userDetails.isWatched,
         },
       ),
     );
