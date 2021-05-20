@@ -29,7 +29,7 @@ const header = document.querySelector('.header');
 
 const statsView = new StatsView(films);
 
-render(header, new ProfileView());
+render(header, new ProfileView(films));
 
 const filmsListPresenter = new FilmsListPresenter(siteMain, filmsModel, filterModel);
 const filterPresenter = new FilterPresenter(siteMain, filterModel, filmsModel, statsView, filmsListPresenter);

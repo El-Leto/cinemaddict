@@ -35,4 +35,18 @@ const FilterType = {
 
 const VISUALLY_HIDDEN = 'visually-hidden';
 
-export { EMOJIS, SortType, UpdateType, UserAction, FilterType, VISUALLY_HIDDEN };
+const TimeRange = {
+  ALL_TIME: 'all-time',
+  DAY: 'day',
+  WEEK: 'week',
+  MONTH: 'month',
+  YEAR: 'year',
+};
+
+const Rank = {
+  NOVICE: 'Novice',
+  FAN: 'Fan',
+  MOVIE_BUFF: 'Movie Buff',
+};
+
+export { EMOJIS, SortType, UpdateType, UserAction, FilterType, VISUALLY_HIDDEN, TimeRange, Rank };
