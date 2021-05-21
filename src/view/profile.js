@@ -1,8 +1,9 @@
 import AbstractView from './abstract.js';
-import { getRankName } from '../utils/statistics.js';
+import { getRankName, countWatchedFilms } from '../utils/statistics.js';
 
 const createProfileTemplate = (films) => {
-  const rankName = getRankName(films);
+  const filmsLength = countWatchedFilms(films);
+  const rankName = getRankName(filmsLength);
 
   return (
     `<section class="header__profile profile">

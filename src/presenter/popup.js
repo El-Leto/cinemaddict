@@ -67,7 +67,7 @@ export default class Popup {
       UpdateType.PATCH,
       Object.assign(
         {},
-        this._film,
+        this._film.userDetails,
         {
           isWatchlist: !this._film.userDetails.isWatchlist,
         },
@@ -81,7 +81,7 @@ export default class Popup {
       UpdateType.PATCH,
       Object.assign(
         {},
-        this._film,
+        this._film.userDetails,
         {
           isFavorite: !this._film.userDetails.isFavorite,
         },
@@ -95,7 +95,7 @@ export default class Popup {
       UpdateType.PATCH,
       Object.assign(
         {},
-        this._film,
+        this._film.userDetails,
         {
           isWatched: !this._film.userDetails.isWatched,
         },

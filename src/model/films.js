@@ -16,7 +16,6 @@ export default class Films extends Observer {
 
   update(updateType, update) {
     const index = this._items.findIndex((item) => item.id === update.id);
-
     if (index === -1) {
       throw new Error('Can\'t update unexisting film');
     }

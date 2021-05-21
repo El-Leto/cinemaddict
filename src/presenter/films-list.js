@@ -66,9 +66,9 @@ export default class FilmsList {
 
     switch (this._currentSortType) {
       case SortType.BY_DATE:
-        return filtredFilms.sort((filmA, filmB) => filmB.date - filmA.date);
+        return filtredFilms.sort((filmA, filmB) => filmB.filmInfo.date - filmA.filmInfo.date);
       case SortType.BY_RATING:
-        return filtredFilms.sort((filmA, filmB) => filmB.totalRating - filmA.totalRating);
+        return filtredFilms.sort((filmA, filmB) => filmB.filmInfo.totalRating - filmA.filmInfo.totalRating);
     }
 
     if (filtredFilms.length === 0 ) {

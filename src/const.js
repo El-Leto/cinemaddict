@@ -43,10 +43,10 @@ const TimeRange = {
   YEAR: 'year',
 };
 
-const Rank = {
+const UserRank = {
   NOVICE: 'Novice',
   FAN: 'Fan',
   MOVIE_BUFF: 'Movie Buff',
 };
 
-export { EMOJIS, SortType, UpdateType, UserAction, FilterType, VISUALLY_HIDDEN, TimeRange, Rank };
+export { EMOJIS, SortType, UpdateType, UserAction, FilterType, VISUALLY_HIDDEN, TimeRange, UserRank };

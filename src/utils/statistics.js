@@ -1,20 +1,27 @@
 import dayjs from 'dayjs';
-import { TimeRange, Rank } from '../const.js';
+import { TimeRange, UserRank } from '../const.js';
 
-const rank = {
-  [Rank.NOVICE]: (count) => count <= 10,
-  [Rank.FAN]: (count) => count <= 20 && count > 10,
-  [Rank.MOVIE_BUFF]: (count) => count > 20,
+const watchedFilms = (array) => {
+  return array.filter((film) => film.userDetails.isWatched);
 };
 
-const getRankName = (films) => {
-  const watchedFilms = films.filter((film) => film.userDetails.isWatched);
-  const watchedFilmsAmount = watchedFilms.length;
-  const [rankName] = Object.entries(rank)
-    .filter(([, rankCount]) => rankCount(watchedFilmsAmount))
-    .flat();
+// const watchedFilmsCount = (array) => {
+//   return watchedFilms(array).length;
+// };
 
-  return rankName;
+const countWatchedFilms = (films) => films
+  .reduce((count, {userDetails}) => userDetails.isWatched ? count + 1 : count, 0);
+
+const rank = [
+  { title: 'Novice', watched: 10},
+  { title: 'Fan', watched: 20},
+  { title: 'Movie Buff', watched: Infinity},
+];
+
+const getRankName = (films) => {
+  const length = films;
+  const name = rank.find((item) => item.watched === length || item.watched > length);
+  return name.title;
 };
 
 const filterWatchedFilmsInRange = ({films, range}) => {
@@ -29,4 +36,10 @@ const filterWatchedFilmsInRange = ({films, range}) => {
   });
 };
 
-export { getRankName, filterWatchedFilmsInRange };
+export { getRankName, filterWatchedFilmsInRange, watchedFilms, countWatchedFilms };
+
+
+// Для этого советую использовать (константовйй) массив с названием ранка и макс.
+// значением нужного кол. просмотров: [ { title: 'Novice', watched: 10 }, ... ].
+// Чтобы из него получить объект с title имея общие кол. просмотров (вычисляется
+//   отдельным циклом по массиву) создай функцию, которая будет использовать Array.p.find

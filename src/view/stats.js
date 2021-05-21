@@ -2,7 +2,8 @@ import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import SmartView from './smart.js';
 import { TimeRange } from '../const.js';
-import { getRankName, filterWatchedFilmsInRange } from '../utils/statistics.js';
+import { filterWatchedFilmsInRange, watchedFilms, getRankName, countWatchedFilms } from '../utils/statistics.js';
+import { getTimeFromMins } from '../utils/format-date.js';
 
 const BAR_HEIGHT = 50;
 const BG_COLOR = '#ffe800';
@@ -12,36 +13,34 @@ const FONT_COLOR = '#ffffff';
 const OFFSET = 40;
 const TICKS_PADDING = 100;
 const BAR_THICKNESS = 24;
+const MINUTES_IN_HOUR = 60;
 
-const getSortedfFilms = (films) => {
-  const watchedFilms = films.filter((film) => film.userDetails.isWatched);
-
-  const filmsGenres = watchedFilms.reduce((prev, curr) => {
-    return [...prev, ...curr.filmInfo.genres];
-  }, []);
-
-  const filmsByGenreCounts = filmsGenres.reduce((acc, rec) => {
-    return (typeof acc[rec] !== 'undefined')
-      ? { ...acc, [rec]: acc[rec] + 1 }
-      : { ...acc, [rec]: 1 };
-  }, {});
-
-  const sortedFilmByGenreCounts = Object.entries(filmsByGenreCounts).map(([ key, val ]) => ({ key, counts: val })).sort((a, b) => b.counts - a.counts);
-  return sortedFilmByGenreCounts ? sortedFilmByGenreCounts : [];
+const reduceGenres = (genres, genre) => {
+  const count = genres[genre];
+  genres[genre] = count === undefined ? 1 : count + 1;
+  return genres;
 };
 
-const getTopGenre = (films) => {
-  if (!films.length) {
-    return '';
-  }
+const getWatchedStats = (films) => films
+  .reduce((stats, { filmInfo, userDetails }) => {
+    if (userDetails.isWatched) {
+      stats.watched += 1;
+      stats.runtime += filmInfo.runtime;
+      stats.genres = filmInfo.genres.reduce(reduceGenres, stats.genres);
+    }
 
-  const countFilmsByGenre = getSortedfFilms(films);
-  return countFilmsByGenre.length ? countFilmsByGenre[0].key : '';
+    return stats;
+  }, { runtime: 0, watched: 0, genres: {} });
+
+const sortedFilmByGenreCounts = (films) => {
+  return Object.entries(films).map(([ key, value ]) => ({ key, count: value })).sort((a, b) => b.count - a.count);
 };
 
 const renderChart = (statisticCtx, films) => {
-  const genres = getSortedfFilms(films).map((a) => a.key);
-  const counts = getSortedfFilms(films).map((a) => a.counts);
+  const genresWatchedFilms = getWatchedStats(films).genres;
+  const sortedFilms = sortedFilmByGenreCounts(genresWatchedFilms);
+  const genres = sortedFilms.map((a) => a.key);
+  const counts = sortedFilms.map((a) => a.count);
 
   statisticCtx.height = BAR_HEIGHT * genres.length;
 
@@ -67,6 +66,7 @@ const renderChart = (statisticCtx, films) => {
           anchor: 'start',
           align: 'start',
           offset: OFFSET,
+          barThickness: BAR_THICKNESS,
         },
       },
       scales: {
@@ -80,7 +80,6 @@ const renderChart = (statisticCtx, films) => {
             display: false,
             drawBorder: false,
           },
-          barThickness: BAR_THICKNESS,
         }],
         xAxes: [{
           ticks: {
@@ -103,31 +102,30 @@ const renderChart = (statisticCtx, films) => {
   });
 };
 
-const getTotalWatchedTime = (films) => {
-  if (!films) {
-    return '0';
-  }
-
-  return films.reduce((counter, film) => {
-    return counter + film.filmInfo.runtime;
-  }, 0);
-};
-
-const createStatsTemplate = ({films, range}, filteredMovies) => {
-  const rankName = getRankName(films);
-  const watchedFilms = filteredMovies.filter((film) => film.userDetails.isWatched);
-  const watchedMoviesCount = watchedFilms.length;
-  const totalWatchedTimeInMin = getTotalWatchedTime(watchedFilms);
-  const hours = Math.floor(totalWatchedTimeInMin / 60 );
-  const minutes = Math.floor(totalWatchedTimeInMin) - (hours * 60);
-  const topGenre = getTopGenre(filteredMovies);
+const createStatsTemplate = ({films, range}) => {
+  const rankNam = getRankName(countWatchedFilms(films));
+  const totalWatchedTimeInMin = getWatchedStats(watchedFilms(films)).runtime;
+  //getTimeFromMins(totalWatchedTimeInMin);
+  //const hours = /h /;
+  //const minutes = /m/;
+  //const newarr = getTimeFromMins(totalWatchedTimeInMin).replace(hours, '<span class="statistic__item-description">h</span>');
+  //const newarra = getTimeFromMins(newarr).replace(minutes, '<span class="statistic__item-description">m</span>');
+  const hours = Math.floor(totalWatchedTimeInMin / MINUTES_IN_HOUR );
+  const minutes = Math.floor(totalWatchedTimeInMin) - (hours * MINUTES_IN_HOUR);
+  const sortedFilms = getWatchedStats(films);
+  const topGenre = (array) => {
+    if (Object.keys(array.genres).length !== 0) {
+      return Object.keys(array.genres)[0];
+    }
+    return '';
+  };
 
   return (
     `<section class="statistic">
       <p class="statistic__rank">
         Your rank
         <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-        <span class="statistic__rank-label">${rankName}</span>
+        <span class="statistic__rank-label">${rankNam}</span>
       </p>
 
       <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
@@ -152,7 +150,7 @@ const createStatsTemplate = ({films, range}, filteredMovies) => {
       <ul class="statistic__text-list">
         <li class="statistic__text-item">
           <h4 class="statistic__item-title">You watched</h4>
-          <p class="statistic__item-text">${watchedMoviesCount} <span class="statistic__item-description">movies</span></p>
+          <p class="statistic__item-text">${countWatchedFilms(films)} <span class="statistic__item-description">movies</span></p>
         </li>
         <li class="statistic__text-item">
           <h4 class="statistic__item-title">Total duration</h4>
@@ -160,7 +158,7 @@ const createStatsTemplate = ({films, range}, filteredMovies) => {
         </li>
         <li class="statistic__text-item">
           <h4 class="statistic__item-title">Top genre</h4>
-          <p class="statistic__item-text">${topGenre}</p>
+          <p class="statistic__item-text">${topGenre(sortedFilms)}</p>
         </li>
       </ul>
 

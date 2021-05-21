@@ -9,12 +9,12 @@ const createControlTemplate = (name, title, isChecked = false) => (
    <label for="${name}" class="film-details__control-label film-details__control-label--${name}">${title}</label>`
 );
 
-const createControlsTemplate = (film) => {
+const createControlsTemplate = (userDetails) => {
   const {
     isWatchlist,
     isWatched,
     isFavorite,
-  } = film;
+  } = userDetails;
 
   return (
     `<section class="film-details__controls">
