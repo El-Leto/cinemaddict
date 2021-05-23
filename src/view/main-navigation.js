@@ -1,7 +1,7 @@
 import AbstractView from './abstract.js';
 import {FilterType} from '../const.js';
 
-const STATS = 'STATS';
+//const STATS = 'STATS';
 
 const createMainNavigationItemTemplate = (filter, inicialFilterType) => {
   const {type, name, count} = filter;
@@ -21,12 +21,16 @@ const createMainNavigationTemplate = (items, inicialFilterType) => {
     .map((filter) => createMainNavigationItemTemplate(filter, inicialFilterType))
     .join('');
 
+  const statisticClassName = inicialFilterType === FilterType.STATISTICS
+    ? 'main-navigation__additional--active'
+    : '';
+
   return (
     `<nav class="main-navigation">
       <div class="main-navigation__items">
         ${filterItemsTemplate}
       </div>
-      <a href="#stats" class="main-navigation__additional ${STATS === inicialFilterType ? 'main-navigation__additional--active' : ''}" data-type ="STATS">Stats</a>
+      <a href="#stats" class="main-navigation__additional ${statisticClassName}" data-type ="STATISTICS">Stats</a>
     </nav>`
   );
 };
@@ -38,7 +42,6 @@ export default class MainNavigation extends AbstractView {
     this._inicialFilterType = inicialFilterType;
 
     this._itemsClickHandler = this._itemsClickHandler.bind(this);
-    this._additionalClickHandler = this._additionalClickHandler.bind(this);
   }
 
   getTemplate() {
@@ -47,17 +50,7 @@ export default class MainNavigation extends AbstractView {
 
   setFilterTypeClickHandler(callback) {
     this._callback.clickFilterType = callback;
-    this.getElement().querySelector('.main-navigation__items').addEventListener('click', this._itemsClickHandler);
-  }
-
-  setStatsClickHandler(callback) {
-    this._callback.clickStats = callback;
-    this.getElement().querySelector('.main-navigation__additional').addEventListener('click', this._additionalClickHandler);
-  }
-
-  _additionalClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.clickStats(evt.target.dataset.type);
+    this.getElement().addEventListener('click', this._itemsClickHandler);
   }
 
   _itemsClickHandler(evt) {

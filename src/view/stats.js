@@ -1,9 +1,7 @@
 import Chart from 'chart.js';
-import ChartDataLabels from 'chartjs-plugin-datalabels';
 import SmartView from './smart.js';
 import { TimeRange } from '../const.js';
-import { filterWatchedFilmsInRange, watchedFilms, getRankName, countWatchedFilms } from '../utils/statistics.js';
-import { getTimeFromMins } from '../utils/format-date.js';
+import { filterWatchedFilmsInRange, watchedFilms, countWatchedFilms } from '../utils/statistics.js';
 
 const BAR_HEIGHT = 50;
 const BG_COLOR = '#ffe800';
@@ -22,30 +20,29 @@ const reduceGenres = (genres, genre) => {
 };
 
 const getWatchedStats = (films) => films
-  .reduce((stats, { filmInfo, userDetails }) => {
-    if (userDetails.isWatched) {
+  .reduce((stats, film) => {
+    if (film.isWatched) {
       stats.watched += 1;
-      stats.runtime += filmInfo.runtime;
-      stats.genres = filmInfo.genres.reduce(reduceGenres, stats.genres);
+      stats.runtime += film.runtime;
+      stats.genres = film.genres.reduce(reduceGenres, stats.genres);
     }
 
     return stats;
   }, { runtime: 0, watched: 0, genres: {} });
 
-const sortedFilmByGenreCounts = (films) => {
+const getSortedFilmByGenreCounts = (films) => {
   return Object.entries(films).map(([ key, value ]) => ({ key, count: value })).sort((a, b) => b.count - a.count);
 };
 
 const renderChart = (statisticCtx, films) => {
   const genresWatchedFilms = getWatchedStats(films).genres;
-  const sortedFilms = sortedFilmByGenreCounts(genresWatchedFilms);
+  const sortedFilms = getSortedFilmByGenreCounts(genresWatchedFilms);
   const genres = sortedFilms.map((a) => a.key);
   const counts = sortedFilms.map((a) => a.count);
 
   statisticCtx.height = BAR_HEIGHT * genres.length;
 
   return new Chart(statisticCtx, {
-    plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
       labels: genres,
@@ -102,14 +99,8 @@ const renderChart = (statisticCtx, films) => {
   });
 };
 
-const createStatsTemplate = ({films, range}) => {
-  const rankNam = getRankName(countWatchedFilms(films));
+const createStatsTemplate = (rankName, {films, range}) => {
   const totalWatchedTimeInMin = getWatchedStats(watchedFilms(films)).runtime;
-  //getTimeFromMins(totalWatchedTimeInMin);
-  //const hours = /h /;
-  //const minutes = /m/;
-  //const newarr = getTimeFromMins(totalWatchedTimeInMin).replace(hours, '<span class="statistic__item-description">h</span>');
-  //const newarra = getTimeFromMins(newarr).replace(minutes, '<span class="statistic__item-description">m</span>');
   const hours = Math.floor(totalWatchedTimeInMin / MINUTES_IN_HOUR );
   const minutes = Math.floor(totalWatchedTimeInMin) - (hours * MINUTES_IN_HOUR);
   const sortedFilms = getWatchedStats(films);
@@ -125,7 +116,7 @@ const createStatsTemplate = ({films, range}) => {
       <p class="statistic__rank">
         Your rank
         <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-        <span class="statistic__rank-label">${rankNam}</span>
+        <span class="statistic__rank-label">${rankName}</span>
       </p>
 
       <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
@@ -171,15 +162,12 @@ const createStatsTemplate = ({films, range}) => {
 };
 
 export default class Stats extends SmartView {
-  constructor(films) {
+  constructor(state, rankName) {
     super();
-    this._films = films.slice();
     this._chart = null;
     this._range = TimeRange.ALL_TIME;
-    this._state = {
-      films: this._films,
-      range: TimeRange.ALL_TIME,
-    };
+    this._state = state;
+    this._rankName = rankName;
 
     this._setCharts();
 
@@ -189,7 +177,7 @@ export default class Stats extends SmartView {
   }
 
   getTemplate() {
-    return createStatsTemplate(this._state, this._getWatchedFilms());
+    return createStatsTemplate(this._rankName, this._state, this._getWatchedFilms());
   }
 
   restoreHandlers() {

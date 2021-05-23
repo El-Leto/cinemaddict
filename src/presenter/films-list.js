@@ -49,16 +49,6 @@ export default class FilmsList {
     this._render();
   }
 
-  show() {
-    this._siteSortView.show();
-    this._mainContentView.show();
-  }
-
-  hide() {
-    this._siteSortView.hide();
-    this._mainContentView.hide();
-  }
-
   _get() {
     const filterType = this._filterModel.getType();
     const films = this._filmsModel.get().slice();
@@ -66,9 +56,9 @@ export default class FilmsList {
 
     switch (this._currentSortType) {
       case SortType.BY_DATE:
-        return filtredFilms.sort((filmA, filmB) => filmB.filmInfo.date - filmA.filmInfo.date);
+        return filtredFilms.sort((filmA, filmB) => filmB.date - filmA.date);
       case SortType.BY_RATING:
-        return filtredFilms.sort((filmA, filmB) => filmB.filmInfo.totalRating - filmA.filmInfo.totalRating);
+        return filtredFilms.sort((filmA, filmB) => filmB.totalRating - filmA.totalRating);
     }
 
     if (filtredFilms.length === 0 ) {
@@ -209,6 +199,20 @@ export default class FilmsList {
     if (resetSortType) {
       this._currentSortType = SortType.DEFAULT;
     }
+  }
+
+  hide() {
+    this._mainContentView.hide();
+    this._siteSortView.hide();
+    this._noFilmsView.hide();
+    this._showMoreButtonView.hide();
+  }
+
+  show() {
+    this._mainContentView.show();
+    this._siteSortView.show();
+    this._noFilmsView.show();
+    this._showMoreButtonView.show();
   }
 
   _handleViewAction(actionType, updateType, update) {

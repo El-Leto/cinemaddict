@@ -54,9 +54,9 @@ export default class FilmCard {
       UpdateType.PATCH,
       Object.assign(
         {},
-        this._film.userDetails,
+        this._film,
         {
-          isWatchlist: !this._film.userDetails.isWatchlist,
+          isWatchlist: !this._film.isWatchlist,
         },
       ),
     );
@@ -68,9 +68,9 @@ export default class FilmCard {
       UpdateType.PATCH,
       Object.assign(
         {},
-        this._film.userDetails,
+        this._film,
         {
-          isFavorite: !this._film.userDetails.isFavorite,
+          isFavorite: !this._film.isFavorite,
         },
       ),
     );
@@ -82,9 +82,9 @@ export default class FilmCard {
       UpdateType.PATCH,
       Object.assign(
         {},
-        this._film.userDetails,
+        this._film,
         {
-          isWatched: !this._film.userDetails.isWatched,
+          isWatched: !this._film.isWatched,
         },
       ),
     );

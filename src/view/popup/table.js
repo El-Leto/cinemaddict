@@ -12,8 +12,6 @@ const createDetailsRowTemplate = (term, cell) => (
 );
 
 export const createTableTemplate = (film) => {
-
-  const {filmInfo} = film;
   const {
     poster,
     title,
@@ -27,7 +25,7 @@ export const createTableTemplate = (film) => {
     country,
     genres,
     description,
-  } = filmInfo;
+  } = film;
 
   const genreTitle = genres.length > 1 ? 'Genres': 'Genre';
 
