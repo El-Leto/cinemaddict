@@ -135,7 +135,7 @@ const getDateCreate = () => {
 
 export const generateFilm = () => {
   return {
-    id: movieId++,
+    id: String(movieId++),
     title: getRandomArrayElement(TITLES),
     alternativeTitle: getRandomArrayElement(TITLES),
     poster: getRandomArrayElement(POSTERS),
@@ -152,6 +152,7 @@ export const generateFilm = () => {
     isWatchlist: Boolean(getRandomInteger(0, 1)),
     isWatched: Boolean(getRandomInteger(0, 1)),
     isFavorite: Boolean(getRandomInteger(0, 1)),
+    watchingDate: getDateCreate(),
     comments: Array.from({ length: getRandomInteger(0, 5) }, generateComment),
   };
 };

@@ -1,4 +1,3 @@
-import ProfileView from './view/profile.js';
 //import TopRatedFilmsListView from './view/top-rated-films-list.js';
 //import MostCommentedFilmsListView from './view/most-commented-films-list.js';
 import StatisticsView from './view/statistics.js';
@@ -6,8 +5,11 @@ import { generateFilm } from './mock/film.js';
 import { render } from './utils/render.js';
 import FilmsListPresenter from './presenter/films-list.js';
 import FilterPresenter from './presenter/filter.js';
+import StatsPresenter from './presenter/stats.js';
+import ProfilePresenter from './presenter/profile.js';
 import FilmsModel from './model/films.js';
 import FilterModel from './model/filter.js';
+import { FilterType } from './const.js';
 
 const MAX_FILM_COUNT = 20;
 
@@ -26,13 +28,38 @@ const filterModel = new FilterModel();
 const siteMain = document.querySelector('.main');
 const header = document.querySelector('.header');
 
-render(header, new ProfileView());
-
 const filmsListPresenter = new FilmsListPresenter(siteMain, filmsModel, filterModel);
 const filterPresenter = new FilterPresenter(siteMain, filterModel, filmsModel);
+const statsPresenter = new StatsPresenter(siteMain, filmsModel);
+const profilePresenter = new ProfilePresenter(header, filmsModel);
 
+profilePresenter.init();
+filterPresenter.init();
+
+const handleSiteMenuClick = (filterType) => {
+  switch (filterType) {
+    case FilterType.STATISTICS:
+      filmsListPresenter.hide();
+      statsPresenter.init();
+      filmsListPresenter.hide();
+      break;
+    case FilterType.ALL_MOVIES:
+    case FilterType.WATHCLIST:
+    case FilterType.FAVORITES:
+    case FilterType.HISTORY:
+      filmsListPresenter.show();
+      statsPresenter.hide();
+      break;
+  }
+};
+
+filterPresenter.setMenuClickHandler(handleSiteMenuClick);
+
+profilePresenter.init();
 filterPresenter.init();
 filmsListPresenter.init();
+statsPresenter.init();
+statsPresenter.hide();
 
 // const createTopRatedFilmsListTemplate = () => {
 //   const allFilmsListView = new AllFilmsListView();

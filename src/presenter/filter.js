@@ -12,7 +12,7 @@ export default class Filter {
     this._view = null;
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
-    this._handleItemTypeClick = this._handleItemTypeClick.bind(this);
+    this._handleMenuItemChange = this._handleMenuItemChange.bind(this);
 
     this._filmsModel.subscribe(this._handleModelEvent);
     this._model.subscribe(this._handleModelEvent);
@@ -23,7 +23,7 @@ export default class Filter {
     const prevFilter = this._view;
 
     this._view = new MainNavigationView(filters, this._model.getType());
-    this._view.setFilterTypeClickHandler(this._handleItemTypeClick);
+    this._view.setFilterTypeClickHandler(this._handleMenuItemChange);
 
     if (prevFilter === null) {
       render(this._container, this._view);
@@ -34,16 +34,24 @@ export default class Filter {
     remove(prevFilter);
   }
 
+  setMenuClickHandler(callback) {
+    this._handleSiteMenuClick = callback;
+  }
+
   _handleModelEvent() {
     this.init();
   }
 
-  _handleItemTypeClick(filterType) {
-    if (this._model.getType() === filterType) {
+  _handleMenuItemChange(filterType) {
+    if (this._model.getType() === filterType && this._model.getType() !== filterType.STATISTICS) {
       return;
+    }
+    if(this._model.getType() === filterType.STATISTICS) {
+      this._handleSiteMenuClick(filterType.STATISTICS);
     }
 
     this._model.set(UpdateType.MAJOR, filterType);
+    this._handleSiteMenuClick(filterType);
   }
 
   _get() {

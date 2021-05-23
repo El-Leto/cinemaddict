@@ -1,12 +1,6 @@
 import FilmCardView from '../view/film-card.js';
 import { render, replace, remove } from '../utils/render.js';
 import {UserAction, UpdateType} from '../const.js';
-
-const Mode = {
-  CLOSE: 'CLOSE',
-  OPENED: 'OPENED',
-};
-
 export default class FilmCard {
   constructor(container, changeData, changeMode) {
     this._container = container;
@@ -14,7 +8,6 @@ export default class FilmCard {
     this._changeMode = changeMode;
 
     this._view = null;
-    this._mode = Mode.CLOSE;
 
     this._handleViewClick = this._handleViewClick.bind(this);
 

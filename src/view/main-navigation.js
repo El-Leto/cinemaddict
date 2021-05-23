@@ -1,6 +1,8 @@
 import AbstractView from './abstract.js';
 import {FilterType} from '../const.js';
 
+//const STATS = 'STATS';
+
 const createMainNavigationItemTemplate = (filter, inicialFilterType) => {
   const {type, name, count} = filter;
 
@@ -19,12 +21,16 @@ const createMainNavigationTemplate = (items, inicialFilterType) => {
     .map((filter) => createMainNavigationItemTemplate(filter, inicialFilterType))
     .join('');
 
+  const statisticClassName = inicialFilterType === FilterType.STATISTICS
+    ? 'main-navigation__additional--active'
+    : '';
+
   return (
     `<nav class="main-navigation">
       <div class="main-navigation__items">
         ${filterItemsTemplate}
       </div>
-      <a href="#stats" class="main-navigation__additional">Stats</a>
+      <a href="#stats" class="main-navigation__additional ${statisticClassName}" data-type ="STATISTICS">Stats</a>
     </nav>`
   );
 };
@@ -44,7 +50,7 @@ export default class MainNavigation extends AbstractView {
 
   setFilterTypeClickHandler(callback) {
     this._callback.clickFilterType = callback;
-    this.getElement().querySelector('.main-navigation__items').addEventListener('click', this._itemsClickHandler);
+    this.getElement().addEventListener('click', this._itemsClickHandler);
   }
 
   _itemsClickHandler(evt) {

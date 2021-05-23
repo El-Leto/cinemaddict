@@ -43,8 +43,8 @@ export default class Popup {
     document.body.classList.add(HIDE_CLASS);
   }
 
-  getId() {
-    return this._film.id;
+  isOpen(film) {
+    return this._view !== null && this._film.id == film.id;
   }
 
   _setPopupEventListeners() {

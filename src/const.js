@@ -31,6 +31,17 @@ const FilterType = {
   WATHCLIST: 'Watchlist',
   FAVORITES: 'Favorites',
   HISTORY: 'History',
+  STATISTICS: 'STATISTICS',
 };
 
-export { EMOJIS, SortType, UpdateType, UserAction, FilterType };
+const VISUALLY_HIDDEN = 'visually-hidden';
+
+const TimeRange = {
+  ALL_TIME: 'all-time',
+  DAY: 'day',
+  WEEK: 'week',
+  MONTH: 'month',
+  YEAR: 'year',
+};
+
+export { EMOJIS, SortType, UpdateType, UserAction, FilterType, VISUALLY_HIDDEN, TimeRange };

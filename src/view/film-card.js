@@ -24,10 +24,10 @@ const createFilmCardTemplate = (film) => {
     genres,
     poster,
     description,
-    comments,
     isWatchlist,
     isWatched,
     isFavorite,
+    comments,
   } = film;
 
   return (

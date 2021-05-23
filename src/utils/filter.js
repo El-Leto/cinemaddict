@@ -4,4 +4,5 @@ export const filterTypeToFilterFilms = {
   [FilterType.WATHCLIST]: (films) => films.filter((film) => film.isWatchlist),
   [FilterType.HISTORY]: (films) => films.filter((film) => film.isWatched),
   [FilterType.FAVORITES]: (films) => films.filter((film) => film.isFavorite),
+  [FilterType.STATISTICS]: (films) => films.slice(),
 };

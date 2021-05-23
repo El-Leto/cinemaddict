@@ -81,7 +81,7 @@ export default class FilmsList {
   _updatePopup(film) {
     const presenter = this._popupPresenter;
 
-    if (presenter !== null && presenter.getId() === film.id) {
+    if (presenter !== null && presenter.isOpen(film)) {
       presenter.init(film);
     }
   }
@@ -108,7 +108,7 @@ export default class FilmsList {
 
     this._currentSortType = sortType;
 
-    this._clear({resetRenderedFilmCount: true});
+    this._clear({resetRenderedFilmCount: false});
     this._render();
   }
 
@@ -189,6 +189,7 @@ export default class FilmsList {
       .forEach((presenter) => presenter.destroy());
     this._filmCardPresenter = {};
 
+    remove(this._mainContentView);
     remove(this._siteSortView);
     remove(this._noFilmsView);
     remove(this._showMoreButtonView);
@@ -198,6 +199,20 @@ export default class FilmsList {
     if (resetSortType) {
       this._currentSortType = SortType.DEFAULT;
     }
+  }
+
+  hide() {
+    this._mainContentView.hide();
+    this._siteSortView.hide();
+    this._noFilmsView.hide();
+    this._showMoreButtonView.hide();
+  }
+
+  show() {
+    this._mainContentView.show();
+    this._siteSortView.show();
+    this._noFilmsView.show();
+    this._showMoreButtonView.show();
   }
 
   _handleViewAction(actionType, updateType, update) {
