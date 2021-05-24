@@ -1,19 +1,19 @@
 import dayjs from 'dayjs';
 import { TimeRange } from '../const.js';
 
-const watchedFilms = (array) => {
-  return array.filter((film) => film.isWatched);
-};
-
-const countWatchedFilms = (films) => films
-  .reduce((count, film) => film.isWatched ? count + 1 : count, 0);
-
 const WATCHED_TITLES = [
   {watched: 21, title: 'Movie Buff'},
   {watched: 11, title: 'Fan'},
   {watched: 1, title: 'Novice'},
   { watched: 0, title: '' },
 ];
+
+const watchedFilms = (array) => {
+  return array.filter((film) => film.isWatched);
+};
+
+const countWatchedFilms = (films) => films
+  .reduce((count, film) => film.isWatched ? count + 1 : count, 0);
 
 const getRankTitle = (value) => WATCHED_TITLES
   .find(({watched}) => watched <= value)

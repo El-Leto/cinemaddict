@@ -104,9 +104,9 @@ const createStatsTemplate = (rankName, {films, range}) => {
   const hours = Math.floor(totalWatchedTimeInMin / MINUTES_IN_HOUR );
   const minutes = Math.floor(totalWatchedTimeInMin) - (hours * MINUTES_IN_HOUR);
   const sortedFilms = getWatchedStats(films);
-  const topGenre = (array) => {
-    if (Object.keys(array.genres).length !== 0) {
-      return Object.keys(array.genres)[0];
+  const topGenre = (films) => {
+    if (Object.keys(films.genres).length !== 0) {
+      return Object.keys(films.genres)[0];
     }
     return '';
   };
@@ -166,7 +166,10 @@ export default class Stats extends SmartView {
     super();
     this._chart = null;
     this._range = TimeRange.ALL_TIME;
-    this._state = state;
+    this._state = {
+      films: state,
+      range: TimeRange.ALL_TIME,
+    };
     this._rankName = rankName;
 
     this._setCharts();
@@ -177,7 +180,7 @@ export default class Stats extends SmartView {
   }
 
   getTemplate() {
-    return createStatsTemplate(this._rankName, this._state, this._getWatchedFilms());
+    return createStatsTemplate(this._rankName.getStatus(), this._state, this._getWatchedFilms());
   }
 
   restoreHandlers() {

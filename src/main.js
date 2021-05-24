@@ -28,10 +28,10 @@ const filterModel = new FilterModel();
 const siteMain = document.querySelector('.main');
 const header = document.querySelector('.header');
 
+const profilePresenter = new ProfilePresenter(header, filmsModel);
 const filmsListPresenter = new FilmsListPresenter(siteMain, filmsModel, filterModel);
 const filterPresenter = new FilterPresenter(siteMain, filterModel, filmsModel);
-const statsPresenter = new StatsPresenter(siteMain, filmsModel);
-const profilePresenter = new ProfilePresenter(header, filmsModel);
+const statsPresenter = new StatsPresenter(siteMain, filmsModel, profilePresenter);
 
 profilePresenter.init();
 filterPresenter.init();
@@ -41,7 +41,7 @@ const handleSiteMenuClick = (filterType) => {
     case FilterType.STATISTICS:
       filmsListPresenter.hide();
       statsPresenter.init();
-      filmsListPresenter.hide();
+      statsPresenter.show();
       break;
     case FilterType.ALL_MOVIES:
     case FilterType.WATHCLIST:

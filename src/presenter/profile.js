@@ -6,7 +6,6 @@ export default class Profile {
   constructor(container, filmsModel) {
     this._container = container;
     this._filmsModel = filmsModel;
-    this._films = this._filmsModel.get().slice();
 
     this._profileView = null;
 
@@ -18,15 +17,19 @@ export default class Profile {
     this._render();
   }
 
-  _getStatus() {
-    return getRankTitle(countWatchedFilms(this._films));
+  _getFilms() {
+    return this._filmsModel.get();
+  }
+
+  getStatus() {
+    return getRankTitle(countWatchedFilms(this._getFilms()));
   }
 
   _render() {
     const prevProfileView = this._profileView;
-    this._profileView = new ProfileView(this._getStatus());
+    this._profileView = new ProfileView(this.getStatus());
 
-    if (!this._films.length) {
+    if (this._filmsModel.isEmpty()) {
       return;
     }
 
