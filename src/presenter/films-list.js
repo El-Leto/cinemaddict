@@ -29,7 +29,7 @@ export default class FilmsList {
     this._siteSortView = null;
     this._showMoreButtonView = null;
     this._allFilmsView = new AllFilmsView();
-    this._allFilmsListView = new AllFilmsListView();
+    this._listView = new AllFilmsListView();
     this._noFilmsView = new NoFilmsView();
     this._mainContentView = new MainContentView();
     this._loadingView = new LoadingView();
@@ -100,7 +100,7 @@ export default class FilmsList {
   }
 
   _renderFilmCard(film) {
-    const filmCardPresenter = new FilmCardPresenter(this._allFilmsListView, this._handleViewAction, this._handleModeChange);
+    const filmCardPresenter = new FilmCardPresenter(this._listView, this._handleViewAction, this._handleModeChange);
 
     filmCardPresenter.init(film);
     this._filmCardPresenter[film.id] = filmCardPresenter;
@@ -182,6 +182,7 @@ export default class FilmsList {
 
     if (filmCount === 0) {
       remove(this._allFilmsView);
+      render(this._container, this._mainContentView);
       this._renderNoFilms();
       return;
     }
@@ -191,7 +192,7 @@ export default class FilmsList {
 
     render(this._container, this._mainContentView);
     render(this._mainContentView, this._allFilmsView);
-    render(this._allFilmsView, this._allFilmsListView);
+    render(this._allFilmsView, this._listView);
 
     if (filmCount > this._renderedFilmCount) {
       this._renderShowMoreButton();

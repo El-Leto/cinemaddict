@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import Observer from '../utils/observer.js';
 
 export default class Comments extends Observer {
@@ -16,7 +15,7 @@ export default class Comments extends Observer {
     return this._items;
   }
 
-  update(update) {
+  update(comments) {
     const index = this._items.findIndex((item) => item.id === item.id);
 
     if (index === -1) {
@@ -25,15 +24,15 @@ export default class Comments extends Observer {
 
     this._items = [
       ...this._items.slice(0, index),
-      update,
+      comments,
       ...this._items.slice(index + 1),
     ];
 
-    this._notify(update);
+    this._notify(comments);
   }
 
-  delete(updateType, update) {
-    const index = this._items.findIndex((item) => item.id === update.id);
+  delete(updateType, comments) {
+    const index = this._items.findIndex((item) => item.id === comments.id);
 
     if (index === -1) {
       throw new Error('Can\'t delete unexisting item');
@@ -47,8 +46,8 @@ export default class Comments extends Observer {
     this._notify(updateType, this._items);
   }
 
-  add(updateType, update) {
-    this._items = update;
+  add(updateType, comments) {
+    this._items = comments;
     this._notify(updateType, this._items);
   }
 
@@ -56,36 +55,27 @@ export default class Comments extends Observer {
     const comments = film.comments ? film.comments : film;
 
     const adaptedComments = comments.map((comment) => {
-      const adaptedComment = Object.assign(
-        {},
-        comment,
-        {
-          date: dayjs(comment.date).valueOf(),
-          text: comment.comment,
-          emoji: comment.emotion,
-        });
-
-      delete adaptedComment.comment;
-      delete adaptedComment.emotion;
-
+      const adaptedComment = {
+        id: comment.id,
+        author: comment.author,
+        date: comment.date !== null
+          ? new Date(comment.date)
+          : comment.date,
+        text: comment.comment,
+        emoji: comment.emotion,
+      };
       return adaptedComment;
     });
-
     return adaptedComments;
   }
 
-  static adaptToServer(comments) {
-    const adaptedComments = Object.assign(
-      {},
-      comments,
-      {
-        comment: comments.text,
-        emotion: comments.emoji,
-      });
-
-    delete adaptedComments.text;
-    delete adaptedComments.emoji;
-
-    return adaptedComments;
+  static adaptToServer(comment) {
+    return {
+      'id': comment.id,
+      'author': comment.author,
+      'date': comment.date instanceof Date ? comment.date.toISOString() : null,
+      'comment': comment.text,
+      'emotion': comment.emoji,
+    };
   }
 }

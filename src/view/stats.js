@@ -30,15 +30,15 @@ const getWatchedStats = (films) => films
     return stats;
   }, { runtime: 0, watched: 0, genres: {} });
 
-const getSortedFilmByGenreCounts = (films) => {
-  return Object.entries(films).map(([ key, value ]) => ({ key, count: value })).sort((a, b) => b.count - a.count);
+const getSortedFilmByGenreCounts = (stats) => {
+  return Object.entries(stats).map(([ key, value ]) => ({ key, count: value })).sort((a, b) => b.count - a.count);
 };
 
-const renderChart = (statisticCtx, films) => {
-  const genresWatchedFilms = films.genres;
+const renderChart = (statisticCtx, stats) => {
+  const genresWatchedFilms = stats.genres;
   const sortedFilms = getSortedFilmByGenreCounts(genresWatchedFilms);
-  const genres = sortedFilms.map((a) => a.key);
-  const counts = sortedFilms.map((a) => a.count);
+  const genres = sortedFilms.map((film) => film.key);
+  const counts = sortedFilms.map((film) => film.count);
 
   statisticCtx.height = BAR_HEIGHT * genres.length;
 
@@ -99,13 +99,13 @@ const renderChart = (statisticCtx, films) => {
   });
 };
 
-const createStatsTemplate = (rankName, films, {range}, filmsCount) => {
-  const totalWatchedTimeInMin = films.runtime;
+const createStatsTemplate = (rankName, stats, {range}, filmsCount) => {
+  const totalWatchedTimeInMin = stats.runtime;
   const hours = Math.floor(totalWatchedTimeInMin / MINUTES_IN_HOUR );
   const minutes = Math.floor(totalWatchedTimeInMin) - (hours * MINUTES_IN_HOUR);
-  const topGenre = (films) => {
-    if (Object.keys(films.genres).length !== 0) {
-      return Object.keys(films.genres)[0];
+  const getTopGenre = (stats) => {
+    if (Object.keys(stats.genres).length !== 0) {
+      return Object.keys(stats.genres)[0];
     }
     return '';
   };
@@ -148,7 +148,7 @@ const createStatsTemplate = (rankName, films, {range}, filmsCount) => {
         </li>
         <li class="statistic__text-item">
           <h4 class="statistic__item-title">Top genre</h4>
-          <p class="statistic__item-text">${topGenre(films)}</p>
+          <p class="statistic__item-text">${getTopGenre(stats)}</p>
         </li>
       </ul>
 
@@ -161,11 +161,11 @@ const createStatsTemplate = (rankName, films, {range}, filmsCount) => {
 };
 
 export default class Stats extends SmartView {
-  constructor(state, rankName) {
+  constructor(states, rankName) {
     super();
     this._chart = null;
     this._state = {
-      films: state,
+      films: states,
       range: TimeRange.ALL_TIME,
     };
     this._rankName = rankName;

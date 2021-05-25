@@ -1,7 +1,7 @@
 //import TopRatedFilmsListView from './view/top-rated-films-list.js';
 //import MostCommentedFilmsListView from './view/most-commented-films-list.js';
 import StatisticsView from './view/statistics.js';
-import { render } from './utils/render.js';
+import { render, remove } from './utils/render.js';
 import FilmsListPresenter from './presenter/films-list.js';
 import FilterPresenter from './presenter/filter.js';
 import StatsPresenter from './presenter/stats.js';
@@ -12,7 +12,6 @@ import СommentsModel from './model/comments.js';
 import { FilterType, UpdateType } from './const.js';
 import Api from './api.js';
 
-const MAX_FILM_COUNT = 20;
 const AUTHORIZATION = 'Basic 43el27leto13';
 const END_POINT = 'https://14.ecmascript.pages.academy/cinemaddict';
 
@@ -23,16 +22,26 @@ const END_POINT = 'https://14.ecmascript.pages.academy/cinemaddict';
 
 const siteMain = document.querySelector('.main');
 const header = document.querySelector('.header');
+const statistics = document.querySelector('.footer__statistics');
 const api = new Api(END_POINT, AUTHORIZATION);
 
 const filmsModel = new FilmsModel();
 const filterModel = new FilterModel();
 const commentsModel = new СommentsModel();
+const empryFilmCount = new StatisticsView(0);
 
 const profilePresenter = new ProfilePresenter(header, filmsModel);
 const filmsListPresenter = new FilmsListPresenter(siteMain, filmsModel, filterModel, commentsModel, api);
 const filterPresenter = new FilterPresenter(siteMain, filterModel, filmsModel);
 const statsPresenter = new StatsPresenter(siteMain, filmsModel, profilePresenter);
+
+const renderApi = () => {
+  remove(empryFilmCount);
+  const filmsCount = new StatisticsView(filmsModel.get().length);
+  render(statistics, filmsCount);
+  profilePresenter.init();
+  filterPresenter.setMenuClickHandler(handleSiteMenuClick);
+};
 
 const handleSiteMenuClick = (filterType) => {
   switch (filterType) {
@@ -55,17 +64,16 @@ filterPresenter.init();
 filmsListPresenter.init();
 statsPresenter.init();
 statsPresenter.hide();
+render(statistics, empryFilmCount);
 
 api.getFilms()
   .then((films) => {
     filmsModel.set(UpdateType.INIT, films);
-    profilePresenter.init();
-    filterPresenter.setMenuClickHandler(handleSiteMenuClick);
+    renderApi();
   })
   .catch(() => {
     filmsModel.set(UpdateType.INIT, []);
-    profilePresenter.init();
-    filterPresenter.setMenuClickHandler(handleSiteMenuClick);
+    renderApi();
   });
 
 // const createTopRatedFilmsListTemplate = () => {
@@ -105,7 +113,3 @@ api.getFilms()
 // };
 //
 // renderMostCommentedFilmsList(films);
-
-const statistics = document.querySelector('.footer__statistics');
-
-render(statistics, new StatisticsView(MAX_FILM_COUNT));
