@@ -8,9 +8,11 @@ const ESCAPE_KEYS = ['Escape', 'Esc'];
 const isEscEvent = (evt) => ESCAPE_KEYS.includes(evt.key);
 
 export default class Popup {
-  constructor(container, changeData) {
+  constructor(container, changeData, commentsModel, api) {
     this._container = container;
     this._changeData = changeData;
+    this._commentsModel = commentsModel;
+    this._api = api;
 
     this._view = null;
 
@@ -27,17 +29,29 @@ export default class Popup {
     this._renderPopup();
   }
 
+
   _renderPopup() {
     if (this._view !== null) {
       this._view.updateData(this._film);
       return;
     }
 
-    this._view = new PopupView(this._film);
+    this._api.getComments(this._film.id)
+      .then((comments) => {
+        this._commentsModel.set(UpdateType.INIT, comments);
+        const comment = this._getComments();
+        this._view = new PopupView(this._film, comment);
+        render(document.body, this._view);
+        this._setPopupEventListeners();
+      })
+      .catch(() => {
+        this._commentsModel.set(UpdateType.INIT, []);
+        const comment = this._getComments();
+        this._view = new PopupView(this._film, comment);
+        render(document.body, this._view);
+        this._setPopupEventListeners();
+      });
 
-    render(document.body, this._view);
-
-    this._setPopupEventListeners();
 
     document.addEventListener('keydown', this._buttonEscKeydownHandler);
     document.body.classList.add(HIDE_CLASS);
@@ -45,6 +59,10 @@ export default class Popup {
 
   isOpen(film) {
     return this._view !== null && this._film.id == film.id;
+  }
+
+  _getComments() {
+    return this._commentsModel.get();
   }
 
   _setPopupEventListeners() {

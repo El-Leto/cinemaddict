@@ -41,9 +41,9 @@ const createEmojiTemplate = (emoji, currentEmoji) => {
   }).join('');
 };
 
-const createCommentListTemplate = (film) => {
+const createCommentListTemplate = (film, comments) => {
   const {
-    comments, currentEmoji, currentTextComment,
+    currentEmoji, currentTextComment,
   } = film;
 
   const commentList = comments.map(createCommentTemplate).join('');

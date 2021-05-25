@@ -8,10 +8,6 @@ const WATCHED_TITLES = [
   { watched: 0, title: '' },
 ];
 
-const watchedFilms = (array) => {
-  return array.filter((film) => film.isWatched);
-};
-
 const countWatchedFilms = (films) => films
   .reduce((count, film) => film.isWatched ? count + 1 : count, 0);
 
@@ -21,14 +17,14 @@ const getRankTitle = (value) => WATCHED_TITLES
 
 const filterWatchedFilmsInRange = ({films, range}) => {
   if (range === TimeRange.ALL_TIME) {
-    return films;
+    return films.slice();
   }
 
   return films.filter((film) => {
-    const dateNow = dayjs();
+    const now = new Date();
 
-    return dayjs(film.watchingDate).isSame(dateNow, range);
+    return dayjs(film.watchingDate).isSame(now, range);
   });
 };
 
-export { getRankTitle, filterWatchedFilmsInRange, watchedFilms, countWatchedFilms };
+export { getRankTitle, filterWatchedFilmsInRange, countWatchedFilms };

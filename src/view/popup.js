@@ -1,7 +1,7 @@
 import { createButtonCloseTemplate, createTableTemplate, createControlsTemplate, createCommentListTemplate } from './popup/index.js';
 import SmartView from './smart.js';
 
-const createPopupTemplate = (film) => {
+const createPopupTemplate = (film, filmComments) => {
   const {
     comments,
   } = film;
@@ -18,7 +18,7 @@ const createPopupTemplate = (film) => {
         <div class="film-details__bottom-container">
           <section class="film-details__comments-wrap">
             <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
-            ${createCommentListTemplate(film)}
+            ${createCommentListTemplate(film, filmComments)}
           </section>
         </div>
       </form>
@@ -27,9 +27,10 @@ const createPopupTemplate = (film) => {
 };
 
 export default class Popup extends SmartView {
-  constructor(data) {
+  constructor(data, comments) {
     super();
     this._state = Popup.parseFilmCardToState(data);
+    this._comments = comments;
 
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
@@ -43,7 +44,7 @@ export default class Popup extends SmartView {
   }
 
   getTemplate() {
-    return createPopupTemplate(this._state);
+    return createPopupTemplate(this._state, this._comments);
   }
 
   reset(data) {

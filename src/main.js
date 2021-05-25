@@ -1,7 +1,6 @@
 //import TopRatedFilmsListView from './view/top-rated-films-list.js';
 //import MostCommentedFilmsListView from './view/most-commented-films-list.js';
 import StatisticsView from './view/statistics.js';
-import { generateFilm } from './mock/film.js';
 import { render } from './utils/render.js';
 import FilmsListPresenter from './presenter/films-list.js';
 import FilterPresenter from './presenter/filter.js';
@@ -9,32 +8,31 @@ import StatsPresenter from './presenter/stats.js';
 import ProfilePresenter from './presenter/profile.js';
 import FilmsModel from './model/films.js';
 import FilterModel from './model/filter.js';
-import { FilterType } from './const.js';
+import СommentsModel from './model/comments.js';
+import { FilterType, UpdateType } from './const.js';
+import Api from './api.js';
 
 const MAX_FILM_COUNT = 20;
+const AUTHORIZATION = 'Basic 43el27leto13';
+const END_POINT = 'https://14.ecmascript.pages.academy/cinemaddict';
 
 // const FilmCount = {
 //   ALL: 5,
 //   EXTRA: 2,
 // };
 
-const films = new Array(MAX_FILM_COUNT).fill().map(generateFilm);
-
-const filmsModel = new FilmsModel();
-filmsModel.set(films);
-
-const filterModel = new FilterModel();
-
 const siteMain = document.querySelector('.main');
 const header = document.querySelector('.header');
+const api = new Api(END_POINT, AUTHORIZATION);
+
+const filmsModel = new FilmsModel();
+const filterModel = new FilterModel();
+const commentsModel = new СommentsModel();
 
 const profilePresenter = new ProfilePresenter(header, filmsModel);
-const filmsListPresenter = new FilmsListPresenter(siteMain, filmsModel, filterModel);
+const filmsListPresenter = new FilmsListPresenter(siteMain, filmsModel, filterModel, commentsModel, api);
 const filterPresenter = new FilterPresenter(siteMain, filterModel, filmsModel);
 const statsPresenter = new StatsPresenter(siteMain, filmsModel, profilePresenter);
-
-profilePresenter.init();
-filterPresenter.init();
 
 const handleSiteMenuClick = (filterType) => {
   switch (filterType) {
@@ -53,13 +51,22 @@ const handleSiteMenuClick = (filterType) => {
   }
 };
 
-filterPresenter.setMenuClickHandler(handleSiteMenuClick);
-
-profilePresenter.init();
 filterPresenter.init();
 filmsListPresenter.init();
 statsPresenter.init();
 statsPresenter.hide();
+
+api.getFilms()
+  .then((films) => {
+    filmsModel.set(UpdateType.INIT, films);
+    profilePresenter.init();
+    filterPresenter.setMenuClickHandler(handleSiteMenuClick);
+  })
+  .catch(() => {
+    filmsModel.set(UpdateType.INIT, []);
+    profilePresenter.init();
+    filterPresenter.setMenuClickHandler(handleSiteMenuClick);
+  });
 
 // const createTopRatedFilmsListTemplate = () => {
 //   const allFilmsListView = new AllFilmsListView();

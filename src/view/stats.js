@@ -1,7 +1,7 @@
 import Chart from 'chart.js';
 import SmartView from './smart.js';
 import { TimeRange } from '../const.js';
-import { filterWatchedFilmsInRange, watchedFilms, countWatchedFilms } from '../utils/statistics.js';
+import { filterWatchedFilmsInRange, countWatchedFilms } from '../utils/statistics.js';
 
 const BAR_HEIGHT = 50;
 const BG_COLOR = '#ffe800';
@@ -35,7 +35,7 @@ const getSortedFilmByGenreCounts = (films) => {
 };
 
 const renderChart = (statisticCtx, films) => {
-  const genresWatchedFilms = getWatchedStats(films).genres;
+  const genresWatchedFilms = films.genres;
   const sortedFilms = getSortedFilmByGenreCounts(genresWatchedFilms);
   const genres = sortedFilms.map((a) => a.key);
   const counts = sortedFilms.map((a) => a.count);
@@ -99,11 +99,10 @@ const renderChart = (statisticCtx, films) => {
   });
 };
 
-const createStatsTemplate = (rankName, {films, range}) => {
-  const totalWatchedTimeInMin = getWatchedStats(watchedFilms(films)).runtime;
+const createStatsTemplate = (rankName, films, {range}, filmsCount) => {
+  const totalWatchedTimeInMin = films.runtime;
   const hours = Math.floor(totalWatchedTimeInMin / MINUTES_IN_HOUR );
   const minutes = Math.floor(totalWatchedTimeInMin) - (hours * MINUTES_IN_HOUR);
-  const sortedFilms = getWatchedStats(films);
   const topGenre = (films) => {
     if (Object.keys(films.genres).length !== 0) {
       return Object.keys(films.genres)[0];
@@ -141,7 +140,7 @@ const createStatsTemplate = (rankName, {films, range}) => {
       <ul class="statistic__text-list">
         <li class="statistic__text-item">
           <h4 class="statistic__item-title">You watched</h4>
-          <p class="statistic__item-text">${countWatchedFilms(films)} <span class="statistic__item-description">movies</span></p>
+          <p class="statistic__item-text">${countWatchedFilms(filmsCount)} <span class="statistic__item-description">movies</span></p>
         </li>
         <li class="statistic__text-item">
           <h4 class="statistic__item-title">Total duration</h4>
@@ -149,7 +148,7 @@ const createStatsTemplate = (rankName, {films, range}) => {
         </li>
         <li class="statistic__text-item">
           <h4 class="statistic__item-title">Top genre</h4>
-          <p class="statistic__item-text">${topGenre(sortedFilms)}</p>
+          <p class="statistic__item-text">${topGenre(films)}</p>
         </li>
       </ul>
 
@@ -165,7 +164,6 @@ export default class Stats extends SmartView {
   constructor(state, rankName) {
     super();
     this._chart = null;
-    this._range = TimeRange.ALL_TIME;
     this._state = {
       films: state,
       range: TimeRange.ALL_TIME,
@@ -180,7 +178,7 @@ export default class Stats extends SmartView {
   }
 
   getTemplate() {
-    return createStatsTemplate(this._rankName.getStatus(), this._state, this._getWatchedFilms());
+    return createStatsTemplate(this._rankName.getStatus(), this._getWatchedStats(), this._state, this._getWatchedFilms());
   }
 
   restoreHandlers() {
@@ -192,13 +190,17 @@ export default class Stats extends SmartView {
     return filterWatchedFilmsInRange(this._state);
   }
 
+  _getWatchedStats() {
+    return getWatchedStats(this._getWatchedFilms());
+  }
+
   _setCharts() {
     if (this._chart !== null) {
       this._chart = null;
     }
 
     const statisticCtx = this.getElement().querySelector('.statistic__chart');
-    this._chart = renderChart(statisticCtx, this._getWatchedFilms());
+    this._chart = renderChart(statisticCtx, this._getWatchedStats());
   }
 
   _setStatisticFilterChangeHandler() {
