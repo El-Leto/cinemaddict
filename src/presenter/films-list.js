@@ -3,6 +3,7 @@ import AllFilmsView from '../view/all-films.js';
 import AllFilmsListView from '../view/all-films-list.js';
 import ShowMoreButtonView from '../view/show-more-button.js';
 import NoFilmsView from '../view/no-films.js';
+import LoadingView from '../view/loading.js';
 import FilmCardPresenter from './film-card.js';
 import FilmPopup from './popup.js';
 import SiteSort from '../view/site-sort.js';
@@ -19,17 +20,19 @@ const actionTypeToFilterType = {
 };
 
 export default class FilmsList {
-  constructor(container, filmsModel, filterModel) {
+  constructor(container, filmsModel, filterModel, commentsModel, api) {
     this._container = container;
     this._filmsModel = filmsModel;
     this._filterModel = filterModel;
+    this._commentsModel = commentsModel;
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
     this._siteSortView = null;
     this._showMoreButtonView = null;
     this._allFilmsView = new AllFilmsView();
-    this._allFilmsListView = new AllFilmsListView();
+    this._listView = new AllFilmsListView();
     this._noFilmsView = new NoFilmsView();
     this._mainContentView = new MainContentView();
+    this._loadingView = new LoadingView();
 
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleViewAction = this._handleViewAction.bind(this);
@@ -40,6 +43,8 @@ export default class FilmsList {
     this._filmCardPresenter = {};
     this._popupPresenter = null;
     this._currentSortType = SortType.DEFAULT;
+    this._isLoading = true;
+    this._api = api;
 
     this._filmsModel.subscribe(this._handleModelEvent);
     this._filterModel.subscribe(this._handleModelEvent);
@@ -72,7 +77,7 @@ export default class FilmsList {
 
   _renderPopup(film) {
     if (this._popupPresenter === null) {
-      this._popupPresenter = new FilmPopup(document.body, this._handleViewAction);
+      this._popupPresenter = new FilmPopup(document.body, this._handleViewAction, this._commentsModel, this._api);
     }
 
     this._popupPresenter.init(film);
@@ -95,7 +100,7 @@ export default class FilmsList {
   }
 
   _renderFilmCard(film) {
-    const filmCardPresenter = new FilmCardPresenter(this._allFilmsListView, this._handleViewAction, this._handleModeChange);
+    const filmCardPresenter = new FilmCardPresenter(this._listView, this._handleViewAction, this._handleModeChange);
 
     filmCardPresenter.init(film);
     this._filmCardPresenter[film.id] = filmCardPresenter;
@@ -114,6 +119,10 @@ export default class FilmsList {
 
   _renderFilms(films) {
     films.forEach((film) => this._renderFilmCard(film));
+  }
+
+  _renderLoading() {
+    render(this._mainContentView, this._loadingView);
   }
 
   _renderNoFilms() {
@@ -156,6 +165,12 @@ export default class FilmsList {
   }
 
   _render() {
+    if (this._isLoading) {
+      render(this._container, this._mainContentView);
+      this._renderLoading();
+      return;
+    }
+
     if (this._filmsModel.isEmpty()) {
       render(this._container, this._mainContentView);
       this._renderNoFilms();
@@ -167,6 +182,7 @@ export default class FilmsList {
 
     if (filmCount === 0) {
       remove(this._allFilmsView);
+      render(this._container, this._mainContentView);
       this._renderNoFilms();
       return;
     }
@@ -176,7 +192,7 @@ export default class FilmsList {
 
     render(this._container, this._mainContentView);
     render(this._mainContentView, this._allFilmsView);
-    render(this._allFilmsView, this._allFilmsListView);
+    render(this._allFilmsView, this._listView);
 
     if (filmCount > this._renderedFilmCount) {
       this._renderShowMoreButton();
@@ -192,6 +208,7 @@ export default class FilmsList {
     remove(this._mainContentView);
     remove(this._siteSortView);
     remove(this._noFilmsView);
+    remove(this._loadingView);
     remove(this._showMoreButtonView);
 
     this._renderedFilmCount = resetRenderedFilmCount ? FILM_COUNT_PER_STEP : Math.min(this._get().length + FILM_COUNT_PER_STEP, this._renderedFilmCount);
@@ -220,10 +237,12 @@ export default class FilmsList {
       case UserAction.UPDATE_WATCHED:
       case UserAction.UPDATE_FAVORITE:
       case UserAction.UPDATE_WATCHLIST:
-        this._filmsModel.update(
-          this._filterModel.getType() === actionTypeToFilterType[actionType] ? UpdateType.MINOR : updateType,
-          update,
-        );
+        this._api.updateFilm(update).then((response) => {
+          this._filmsModel.update(
+            this._filterModel.getType() === actionTypeToFilterType[actionType] ? UpdateType.MINOR : updateType,
+            response,
+          );
+        });
         break;
       // case UserAction.UPDATE:
       //   this._filmsModel.update(updateType, update);
@@ -250,6 +269,11 @@ export default class FilmsList {
         break;
       case UpdateType.MAJOR:
         this._clear({resetRenderedFilmCount: true, resetSortType: true});
+        this._render();
+        break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingView);
         this._render();
         break;
     }

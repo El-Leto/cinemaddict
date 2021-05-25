@@ -1,8 +1,6 @@
 import AbstractView from './abstract.js';
 import {FilterType} from '../const.js';
 
-//const STATS = 'STATS';
-
 const createMainNavigationItemTemplate = (filter, inicialFilterType) => {
   const {type, name, count} = filter;
 

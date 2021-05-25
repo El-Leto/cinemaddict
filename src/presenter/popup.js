@@ -6,11 +6,12 @@ const HIDE_CLASS = 'hide-overflow';
 const ESCAPE_KEYS = ['Escape', 'Esc'];
 
 const isEscEvent = (evt) => ESCAPE_KEYS.includes(evt.key);
-
 export default class Popup {
-  constructor(container, changeData) {
+  constructor(container, changeData, commentsModel, api) {
     this._container = container;
     this._changeData = changeData;
+    this._commentsModel = commentsModel;
+    this._api = api;
 
     this._view = null;
 
@@ -24,30 +25,46 @@ export default class Popup {
 
   init(film) {
     this._film = film;
-    this._renderPopup();
+    this._render();
   }
 
-  _renderPopup() {
+  _render() {
+    const prevView = this._view;
+    const comments = this._getComments();
+    this._view = new PopupView(this._film, comments);
     if (this._view !== null) {
-      this._view.updateData(this._film);
-      return;
+      remove(prevView);
     }
 
-    this._view = new PopupView(this._film);
+    this._api.getComments(this._film.id)
+      .then((comments) => {
+        this._commentsModel.set(UpdateType.INIT, comments);
+        this._renderApi();
+      })
+      .catch(() => {
+        this._commentsModel.set(UpdateType.INIT, []);
+        this._renderApi();
+      });
 
-    render(document.body, this._view);
-
-    this._setPopupEventListeners();
 
     document.addEventListener('keydown', this._buttonEscKeydownHandler);
     document.body.classList.add(HIDE_CLASS);
+  }
+
+  _renderApi() {
+    render(document.body, this._view);
+    this._setViewEventListeners();
   }
 
   isOpen(film) {
     return this._view !== null && this._film.id == film.id;
   }
 
-  _setPopupEventListeners() {
+  _getComments() {
+    return this._commentsModel.get();
+  }
+
+  _setViewEventListeners() {
     this._view.setWatchlistClickHandler(this._handleWatchlistClick);
     this._view.setFavoriteClickHandler(this._handleFavoriteClick);
     this._view.setWatchedClickHandler(this._handleWatchedClick);
