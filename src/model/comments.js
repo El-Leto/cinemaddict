@@ -15,7 +15,7 @@ export default class Comments extends Observer {
     return this._items;
   }
 
-  update(comments) {
+  update(updateType, comments) {
     const index = this._items.findIndex((item) => item.id === item.id);
 
     if (index === -1) {
@@ -28,11 +28,11 @@ export default class Comments extends Observer {
       ...this._items.slice(index + 1),
     ];
 
-    this._notify(comments);
+    this._notify(updateType, comments);
   }
 
-  delete(updateType, comments) {
-    const index = this._items.findIndex((item) => item.id === comments.id);
+  delete(updateType, comment) {
+    const index = this._items.findIndex((item) => item.id === comment);
 
     if (index === -1) {
       throw new Error('Can\'t delete unexisting item');

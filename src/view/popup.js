@@ -36,7 +36,7 @@ export default class Popup extends SmartView {
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
     this._popupCloseButtonClickHandler = this._popupCloseButtonClickHandler.bind(this);
-
+    this._deleteCommentHandler = this._deleteCommentHandler.bind(this);
     this._emojiListChangeHandler = this._emojiListChangeHandler.bind(this);
     this._commentInputInputHandler = this._commentInputInputHandler.bind(this);
 
@@ -77,6 +77,16 @@ export default class Popup extends SmartView {
     this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._popupCloseButtonClickHandler);
   }
 
+  setDeleteCommentClickHandler(callback) {
+    this._callback.clickDeleteComment = callback;
+  }
+
+  setComments() {
+    this.updateData({
+      comments: this._comments,
+    });
+  }
+
   _setInnerHandlers() {
     const node = this.getElement();
     node.querySelector('.film-details__emoji-list').addEventListener('change', this._emojiListChangeHandler);
@@ -85,6 +95,7 @@ export default class Popup extends SmartView {
     node.querySelector('.film-details__control-label--favorite').addEventListener('click', this._favoriteClickHandler);
     node.querySelector('.film-details__control-label--watched').addEventListener('click', this._watchedClickHandler);
     node.querySelector('.film-details__close-btn').addEventListener('click', this._popupCloseButtonClickHandler);
+    node.querySelector('.film-details__comments-list').addEventListener('click', this._deleteCommentHandler);
   }
 
   _watchlistClickHandler() {
@@ -116,6 +127,14 @@ export default class Popup extends SmartView {
       { currentTextComment: evt.target.value },
       true,
     );
+  }
+
+  _deleteCommentHandler(evt) {
+    if (!evt.target.classList.contains('film-details__comment-delete')) {
+      return;
+    }
+    evt.preventDefault();
+    this._callback.clickDeleteComment(evt.target.dataset.commentId);
   }
 
   static parseFilmCardToState(film) {

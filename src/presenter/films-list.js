@@ -244,15 +244,17 @@ export default class FilmsList {
           );
         });
         break;
-      // case UserAction.UPDATE:
-      //   this._filmsModel.update(updateType, update);
-      //   break;
-      // case UserAction.ADD_COMMENT:
-      //   this._commentsModel.add(updateType, update);
-      //   break;
-      // case UserAction.DELETE_COMMENT:
-      //   this._commentsModel.delete(updateType, update);
-      //   break;
+      case UserAction.ADD_COMMENT:
+        this._api.addComment(update).then((response) => {
+          this._commentsModel.add(updateType, response);
+        });
+        break;
+      case UserAction.DELETE_COMMENT:
+        this._api.deleteComment(update).then(() => {
+          this._commentsModel.delete(updateType, update);
+          //this._filterModel.deleteComment(updateType, update);
+        });
+        break;
     }
   }
 

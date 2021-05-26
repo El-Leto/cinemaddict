@@ -1,4 +1,5 @@
 import Chart from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 import SmartView from './smart.js';
 import { TimeRange } from '../const.js';
 import { filterWatchedFilmsInRange, countWatchedFilms } from '../utils/statistics.js';
@@ -43,6 +44,7 @@ const renderChart = (statisticCtx, stats) => {
   statisticCtx.height = BAR_HEIGHT * genres.length;
 
   return new Chart(statisticCtx, {
+    plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
       labels: genres,

@@ -17,10 +17,10 @@ export default class Popup {
 
     this._buttonEscKeydownHandler = this._buttonEscKeydownHandler.bind(this);
     this._handleCloseButtonClick = this._handleCloseButtonClick.bind(this);
-
     this._handleWatchlistClick = this._handleWatchlistClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleWatchedClick = this._handleWatchedClick.bind(this);
+    this._handleDeleteCommentClick = this._handleDeleteCommentClick.bind(this);
   }
 
   init(film) {
@@ -29,20 +29,18 @@ export default class Popup {
   }
 
   _render() {
-    const prevView = this._view;
-    const comments = this._getComments();
-    this._view = new PopupView(this._film, comments);
     if (this._view !== null) {
-      remove(prevView);
+      this._view.updateData(this._film);
+      return;
     }
 
     this._api.getComments(this._film.id)
       .then((comments) => {
-        this._commentsModel.set(UpdateType.INIT, comments);
+        this._commentsModel.set(UpdateType.MINOR, comments);
         this._renderApi();
       })
       .catch(() => {
-        this._commentsModel.set(UpdateType.INIT, []);
+        this._commentsModel.set(UpdateType.MINOR, []);
         this._renderApi();
       });
 
@@ -52,6 +50,8 @@ export default class Popup {
   }
 
   _renderApi() {
+    const comments = this._getComments();
+    this._view = new PopupView(this._film, comments);
     render(document.body, this._view);
     this._setViewEventListeners();
   }
@@ -69,6 +69,7 @@ export default class Popup {
     this._view.setFavoriteClickHandler(this._handleFavoriteClick);
     this._view.setWatchedClickHandler(this._handleWatchedClick);
     this._view.setCloseButtonClickHandler(this._handleCloseButtonClick);
+    this._view.setDeleteCommentClickHandler(this._handleDeleteCommentClick);
   }
 
   _close() {
@@ -130,4 +131,15 @@ export default class Popup {
       this._close();
     }
   }
+
+  _handleDeleteCommentClick(id) {
+    const comment = this._film.comments.filter((comment) => comment === id).join();
+
+    this._changeData(
+      UserAction.DELETE_COMMENT,
+      UpdateType.PATCH,
+      comment,
+    );
+  }
+
 }

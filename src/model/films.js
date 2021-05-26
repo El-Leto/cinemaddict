@@ -15,19 +15,31 @@ export default class Films extends Observer {
     return this._items;
   }
 
-  update(updateType, films) {
-    const index = this._items.findIndex((item) => item.id === films.id);
+
+  //кажется этот придуманный мето не работает. но пока не получилось проверить
+  deleteComment(updateType, comment) {
+    const index = this._items.findIndex((item) => item.comments.id === comment);
+
+    this._items = [
+      ...this._items.splice(index, 1),
+    ];
+
+    this._notify(updateType, comment);
+  }
+
+  update(updateType, film) {
+    const index = this._items.findIndex((item) => item.id === film.id);
     if (index === -1) {
       throw new Error('Can\'t update unexisting film');
     }
 
     this._items = [
       ...this._items.slice(0, index),
-      films,
+      film,
       ...this._items.slice(index + 1),
     ];
 
-    this._notify(updateType, films);
+    this._notify(updateType, film);
   }
 
   isEmpty() {
