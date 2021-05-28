@@ -45,4 +45,12 @@ const TimeRange = {
   YEAR: 'year',
 };
 
-export { EMOJIS, SortType, UpdateType, UserAction, FilterType, VISUALLY_HIDDEN, TimeRange };
+const PopupState = {
+  DELETE: 'delete',
+  DISABLED: 'disable',
+  DEFAULT: 'default',
+  SUBMIT: 'submit',
+  ABORTING: 'aborting',
+};
+
+export { EMOJIS, SortType, UpdateType, UserAction, FilterType, VISUALLY_HIDDEN, TimeRange, PopupState };

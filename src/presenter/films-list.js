@@ -68,7 +68,8 @@ export default class FilmsList {
 
     if (filtredFilms.length === 0 ) {
       this._renderNoFilms();
-    } return filtredFilms;
+    }
+    return filtredFilms;
   }
 
   _handleModeChange(film) {
@@ -237,23 +238,26 @@ export default class FilmsList {
       case UserAction.UPDATE_WATCHED:
       case UserAction.UPDATE_FAVORITE:
       case UserAction.UPDATE_WATCHLIST:
-        this._api.updateFilm(update).then((response) => {
-          this._filmsModel.update(
-            this._filterModel.getType() === actionTypeToFilterType[actionType] ? UpdateType.MINOR : updateType,
-            response,
-          );
-        });
+        this._api.updateFilm(update)
+          .then((response) => {
+            this._filmsModel.update(
+              this._filterModel.getType() === actionTypeToFilterType[actionType] ? UpdateType.MINOR : updateType,
+              response,
+            );
+          })
+          .catch(() => {
+            this._filmCardPresenter.showError();
+          });
         break;
       case UserAction.ADD_COMMENT:
-        this._api.addComment(update).then((response) => {
-          this._commentsModel.add(updateType, response);
-        });
+        this._api.addComment(update.filmId, update.comment)
+          .then(({ film, comments }) => {
+            this._commentsModel.set(updateType, film.id, comments);
+            this._filmsModel.update(updateType, film);
+          });
         break;
       case UserAction.DELETE_COMMENT:
-        this._api.deleteComment(update).then(() => {
-          this._commentsModel.delete(updateType, update);
-          //this._filterModel.deleteComment(updateType, update);
-        });
+        this._filmsModel.update(updateType, update);
         break;
     }
   }

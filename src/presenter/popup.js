@@ -1,11 +1,23 @@
 import PopupView from '../view/popup.js';
 import { render, remove } from '../utils/render.js';
-import {UserAction, UpdateType} from '../const.js';
+import {UserAction, UpdateType, PopupState} from '../const.js';
 
 const HIDE_CLASS = 'hide-overflow';
-const ESCAPE_KEYS = ['Escape', 'Esc'];
+
+const KeyboardKey = {
+  ESCAPE: 'Escape',
+  ESC: 'Esc',
+  ENTER: 'Enter',
+};
+
+const ESCAPE_KEYS = [
+  KeyboardKey.ESCAPE,
+  KeyboardKey.ESC,
+];
 
 const isEscEvent = (evt) => ESCAPE_KEYS.includes(evt.key);
+const isControlEnterEvent = (evt) => evt.key === KeyboardKey.ENTER && (evt.ctrlKey || evt.metaKey);
+
 export default class Popup {
   constructor(container, changeData, commentsModel, api) {
     this._container = container;
@@ -13,9 +25,10 @@ export default class Popup {
     this._commentsModel = commentsModel;
     this._api = api;
 
+    this._film = null;
     this._view = null;
 
-    this._buttonEscKeydownHandler = this._buttonEscKeydownHandler.bind(this);
+    this._keydownHandler = this._keydownHandler.bind(this);
     this._handleCloseButtonClick = this._handleCloseButtonClick.bind(this);
     this._handleWatchlistClick = this._handleWatchlistClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
@@ -30,53 +43,66 @@ export default class Popup {
 
   _render() {
     if (this._view !== null) {
-      this._view.updateData(this._film);
+      this._update();
       return;
     }
 
-    this._api.getComments(this._film.id)
-      .then((comments) => {
-        this._commentsModel.set(UpdateType.MINOR, comments);
-        this._renderApi();
-      })
-      .catch(() => {
-        this._commentsModel.set(UpdateType.MINOR, []);
-        this._renderApi();
-      });
+    this._view = new PopupView(this._film);
+    this._loadComments();
 
+    render(document.body, this._view);
 
-    document.addEventListener('keydown', this._buttonEscKeydownHandler);
+    this._setViewEventListeners();
+
+    document.addEventListener('keydown', this._keydownHandler);
     document.body.classList.add(HIDE_CLASS);
   }
 
-  _renderApi() {
-    const comments = this._getComments();
-    this._view = new PopupView(this._film, comments);
-    render(document.body, this._view);
-    this._setViewEventListeners();
+  _update() {
+    if (this._commentsModel.has(this._film.id)) {
+      const comments = this._commentsModel.get(this._film.id);
+      this._view.reset(this._film, comments);
+    } else {
+      this._view.reset(this._film);
+      this._loadComments();
+    }
+  }
+
+  _loadComments() {
+    const film = this._film;
+
+    this._api.getComments(this._film.id)
+      .then((comments) => {
+        this._commentsModel.set(UpdateType.PATCH, film.id, comments);
+
+        if (this.isOpen(film)) {
+          this._view.reset(film, comments);
+        }
+      })
+      .catch(() => {
+        this._view.showError();
+      });
   }
 
   isOpen(film) {
     return this._view !== null && this._film.id == film.id;
   }
 
-  _getComments() {
-    return this._commentsModel.get();
-  }
-
   _setViewEventListeners() {
-    this._view.setWatchlistClickHandler(this._handleWatchlistClick);
-    this._view.setFavoriteClickHandler(this._handleFavoriteClick);
-    this._view.setWatchedClickHandler(this._handleWatchedClick);
-    this._view.setCloseButtonClickHandler(this._handleCloseButtonClick);
-    this._view.setDeleteCommentClickHandler(this._handleDeleteCommentClick);
+    const view = this._view;
+
+    view.setWatchlistClickHandler(this._handleWatchlistClick);
+    view.setFavoriteClickHandler(this._handleFavoriteClick);
+    view.setWatchedClickHandler(this._handleWatchedClick);
+    view.setCloseButtonClickHandler(this._handleCloseButtonClick);
+    view.setDeleteCommentClickHandler(this._handleDeleteCommentClick);
   }
 
   _close() {
     remove(this._view);
     this._view = null;
     document.body.classList.remove(HIDE_CLASS);
-    document.removeEventListener('keydown', this._buttonEscKeydownHandler);
+    document.removeEventListener('keydown', this._keydownHandler);
   }
 
   _handleWatchlistClick() {
@@ -121,25 +147,58 @@ export default class Popup {
     );
   }
 
+  _handleDeleteCommentClick(commentId) {
+    this._view.setState(PopupState.DELETE, commentId);
+    this._api.deleteComment(commentId)
+      .then(() => {
+        this._commentsModel.delete(UpdateType.PATCH, this._film.id, commentId);
+
+        const comments = this._film.comments.slice();
+        comments.splice(comments.indexOf(commentId), 1);
+
+        this._changeData(
+          UserAction.DELETE_COMMENT,
+          UpdateType.PATCH,
+          Object.assign(
+            {},
+            this._film,
+            {
+              comments,
+            },
+          ),
+        );
+      })
+      .catch(() => {
+        this._view.setState(PopupState.ABORTING);
+      });
+  }
+
   _handleCloseButtonClick() {
     this._close();
   }
 
-  _buttonEscKeydownHandler(evt) {
+  _keydownHandler(evt) {
     if (isEscEvent(evt)) {
       evt.preventDefault();
       this._close();
+      return;
+    }
+
+    if (isControlEnterEvent(evt)) {
+      evt.preventDefault();
+      this._view.setState(PopupState.DISABLED);
+      const comment = this._view.getInput();
+
+      this._changeData(
+        UserAction.ADD_COMMENT,
+        UpdateType.PATCH,
+        {
+          filmId: this._film.id,
+          comment,
+        },
+      );
+
+      this._view.resetForm(this._film);
     }
   }
-
-  _handleDeleteCommentClick(id) {
-    const comment = this._film.comments.filter((comment) => comment === id).join();
-
-    this._changeData(
-      UserAction.DELETE_COMMENT,
-      UpdateType.PATCH,
-      comment,
-    );
-  }
-
 }

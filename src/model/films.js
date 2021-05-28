@@ -15,18 +15,6 @@ export default class Films extends Observer {
     return this._items;
   }
 
-
-  //кажется этот придуманный мето не работает. но пока не получилось проверить
-  deleteComment(updateType, comment) {
-    const index = this._items.findIndex((item) => item.comments.id === comment);
-
-    this._items = [
-      ...this._items.splice(index, 1),
-    ];
-
-    this._notify(updateType, comment);
-  }
-
   update(updateType, film) {
     const index = this._items.findIndex((item) => item.id === film.id);
     if (index === -1) {
@@ -47,32 +35,35 @@ export default class Films extends Observer {
   }
 
   static adaptToClient(film) {
-    const adaptedFilm = {
+    const info = film.film_info;
+    const release = info.release;
+    const details = film.user_details;
+
+    return {
       id: film.id,
       comments: film.comments,
-      title: film.film_info.title,
-      alternativeTitle: film.film_info.alternative_title,
-      poster: film.film_info.poster,
-      description: film.film_info.description,
-      totalRating: film.film_info.total_rating,
-      ageRating: film.film_info.age_rating,
-      director: film.film_info.director,
-      writers: film.film_info.writers,
-      actors: film.film_info.actors,
-      date: film.film_info.release.date !== null
-        ? new Date(film.film_info.release.date)
-        : film.film_info.release.date,
-      country: film.film_info.release.release_country,
-      runtime: film.film_info.runtime,
-      genres: film.film_info.genre,
-      isWatchlist: film.user_details.watchlist,
-      isWatched: film.user_details.already_watched,
-      isFavorite: film.user_details.favorite,
-      watchingDate: film.user_details.watching_date !== null
-        ? new Date(film.user_details.watching_date)
-        : film.user_details.watching_date,
+      title: info.title,
+      alternativeTitle: info.alternative_title,
+      poster: info.poster,
+      description: info.description,
+      totalRating: info.total_rating,
+      ageRating: info.age_rating,
+      director: info.director,
+      writers: info.writers,
+      actors: info.actors,
+      date: info.release.date !== null
+        ? new Date(release.date)
+        : release.date,
+      country: release.release_country,
+      runtime: info.runtime,
+      genres: info.genre,
+      isWatchlist: details.watchlist,
+      isWatched: details.already_watched,
+      isFavorite: details.favorite,
+      watchingDate: details.watching_date !== null
+        ? new Date(details.watching_date)
+        : details.watching_date,
     };
-    return adaptedFilm;
   }
 
   static adaptToServer(film) {

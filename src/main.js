@@ -12,7 +12,7 @@ import СommentsModel from './model/comments.js';
 import { FilterType, UpdateType } from './const.js';
 import Api from './api.js';
 
-const AUTHORIZATION = 'Basic 43el27leto13';
+const AUTHORIZATION = 'Basic 43el27leto1302';
 const END_POINT = 'https://14.ecmascript.pages.academy/cinemaddict';
 
 // const FilmCount = {
