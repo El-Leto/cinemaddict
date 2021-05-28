@@ -246,14 +246,20 @@ export default class FilmsList {
             );
           })
           .catch(() => {
-            this._filmCardPresenter.showError();
+            this._filmCardPresenter[update.id].shake();
           });
         break;
       case UserAction.ADD_COMMENT:
+        this._popupPresenter.setDisabledStatus();
         this._api.addComment(update.filmId, update.comment)
           .then(({ film, comments }) => {
             this._commentsModel.set(updateType, film.id, comments);
             this._filmsModel.update(updateType, film);
+            this._popupPresenter.resetInput();
+            this._popupPresenter.setDefaultStatus();
+          })
+          .catch(() => {
+            this._popupPresenter.shakeInputForm();
           });
         break;
       case UserAction.DELETE_COMMENT:

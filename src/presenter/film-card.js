@@ -44,6 +44,10 @@ export default class FilmCard {
     remove(this._view);
   }
 
+  shake() {
+    this._view.shake();
+  }
+
   _handleViewClick() {
     this._changeMode(this._film);
   }

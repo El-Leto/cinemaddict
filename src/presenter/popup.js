@@ -88,6 +88,22 @@ export default class Popup {
     return this._view !== null && this._film.id == film.id;
   }
 
+  resetInput() {
+    this._view.resetInput();
+  }
+
+  shakeInputForm() {
+    this._view.shakeInputForm();
+  }
+
+  setDisabledStatus() {
+    this._view.setState(PopupState.DISABLED);
+  }
+
+  setDefaultStatus() {
+    this._view.setState(PopupState.DEFAULT);
+  }
+
   _setViewEventListeners() {
     const view = this._view;
 
@@ -170,6 +186,7 @@ export default class Popup {
       })
       .catch(() => {
         this._view.setState(PopupState.ABORTING);
+        this._view.shake();
       });
   }
 
@@ -186,7 +203,6 @@ export default class Popup {
 
     if (isControlEnterEvent(evt)) {
       evt.preventDefault();
-      this._view.setState(PopupState.DISABLED);
       const comment = this._view.getInput();
 
       this._changeData(
@@ -197,8 +213,6 @@ export default class Popup {
           comment,
         },
       );
-
-      this._view.resetForm(this._film);
     }
   }
 }

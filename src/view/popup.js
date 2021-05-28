@@ -1,6 +1,6 @@
 import { createButtonCloseTemplate, createTableTemplate, createControlsTemplate, createCommentListTemplate } from './popup/index.js';
 import SmartView from './smart.js';
-import { PopupState } from '../const.js';
+import { TIMEOUT, PopupState } from '../const.js';
 
 const createPopupTemplate = (state) => {
   const {
@@ -64,9 +64,8 @@ export default class Popup extends SmartView {
     }, false);
   }
 
-  resetForm(film) {
+  resetInput() {
     this.updateData({
-      film,
       currentEmoji: '',
       currentText: '',
     }, false);
@@ -78,6 +77,12 @@ export default class Popup extends SmartView {
       text,
       emoji,
     };
+  }
+
+  shakeInputForm() {
+    const newCommentForm = this.getElement().querySelector('.film-details__comment-input');
+    newCommentForm.classList.add('shake');
+    setTimeout(() => this.getElement().classList.remove('shake'), TIMEOUT);
   }
 
   setState(state, deleteId) {
@@ -112,7 +117,7 @@ export default class Popup extends SmartView {
             isDeleting: false,
           },
         );
-        this.showErrorUI();
+        break;
     }
   }
 
