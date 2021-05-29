@@ -1,6 +1,7 @@
 import FilmCardView from '../view/film-card.js';
 import { render, replace, remove } from '../utils/render.js';
 import {UserAction, UpdateType} from '../const.js';
+import { shake } from '../utils/common.js';
 export default class FilmCard {
   constructor(container, changeData, changeMode) {
     this._container = container;
@@ -42,6 +43,10 @@ export default class FilmCard {
 
   destroy() {
     remove(this._view);
+  }
+
+  shake() {
+    shake(this._view.getElement().querySelector('.film-card'));
   }
 
   _handleViewClick() {

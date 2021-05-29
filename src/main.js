@@ -12,7 +12,7 @@ import СommentsModel from './model/comments.js';
 import { FilterType, UpdateType } from './const.js';
 import Api from './api.js';
 
-const AUTHORIZATION = 'Basic 43el27leto13';
+const AUTHORIZATION = 'Basic 43el27leto1302';
 const END_POINT = 'https://14.ecmascript.pages.academy/cinemaddict';
 
 // const FilmCount = {
@@ -28,7 +28,7 @@ const api = new Api(END_POINT, AUTHORIZATION);
 const filmsModel = new FilmsModel();
 const filterModel = new FilterModel();
 const commentsModel = new СommentsModel();
-const empryFilmCount = new StatisticsView(0);
+const emptyFilmCountView = new StatisticsView(0);
 
 const profilePresenter = new ProfilePresenter(header, filmsModel);
 const filmsListPresenter = new FilmsListPresenter(siteMain, filmsModel, filterModel, commentsModel, api);
@@ -36,9 +36,9 @@ const filterPresenter = new FilterPresenter(siteMain, filterModel, filmsModel);
 const statsPresenter = new StatsPresenter(siteMain, filmsModel, profilePresenter);
 
 const renderApi = () => {
-  remove(empryFilmCount);
-  const filmsCount = new StatisticsView(filmsModel.get().length);
-  render(statistics, filmsCount);
+  remove(emptyFilmCountView);
+  const filmsCountView = new StatisticsView(filmsModel.get().length);
+  render(statistics, filmsCountView);
   profilePresenter.init();
   filterPresenter.setMenuClickHandler(handleSiteMenuClick);
 };
@@ -64,7 +64,7 @@ filterPresenter.init();
 filmsListPresenter.init();
 statsPresenter.init();
 statsPresenter.hide();
-render(statistics, empryFilmCount);
+render(statistics, emptyFilmCountView);
 
 api.getFilms()
   .then((films) => {

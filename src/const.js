@@ -1,3 +1,5 @@
+const SHAKE_TIMEOUT = 1000;
+
 const EMOJIS = [
   'smile',
   'sleeping',
@@ -45,4 +47,12 @@ const TimeRange = {
   YEAR: 'year',
 };
 
-export { EMOJIS, SortType, UpdateType, UserAction, FilterType, VISUALLY_HIDDEN, TimeRange };
+const PopupState = {
+  DELETE: 'delete',
+  DISABLED: 'disable',
+  DEFAULT: 'default',
+  SUBMIT: 'submit',
+  ABORTING: 'aborting',
+};
+
+export { SHAKE_TIMEOUT, EMOJIS, SortType, UpdateType, UserAction, FilterType, VISUALLY_HIDDEN, TimeRange, PopupState };
