@@ -28,7 +28,7 @@ const api = new Api(END_POINT, AUTHORIZATION);
 const filmsModel = new FilmsModel();
 const filterModel = new FilterModel();
 const commentsModel = new СommentsModel();
-const empryFilmCountView = new StatisticsView(0);
+const emptyFilmCountView = new StatisticsView(0);
 
 const profilePresenter = new ProfilePresenter(header, filmsModel);
 const filmsListPresenter = new FilmsListPresenter(siteMain, filmsModel, filterModel, commentsModel, api);
@@ -36,7 +36,7 @@ const filterPresenter = new FilterPresenter(siteMain, filterModel, filmsModel);
 const statsPresenter = new StatsPresenter(siteMain, filmsModel, profilePresenter);
 
 const renderApi = () => {
-  remove(empryFilmCountView);
+  remove(emptyFilmCountView);
   const filmsCountView = new StatisticsView(filmsModel.get().length);
   render(statistics, filmsCountView);
   profilePresenter.init();
@@ -64,7 +64,7 @@ filterPresenter.init();
 filmsListPresenter.init();
 statsPresenter.init();
 statsPresenter.hide();
-render(statistics, empryFilmCountView);
+render(statistics, emptyFilmCountView);
 
 api.getFilms()
   .then((films) => {
