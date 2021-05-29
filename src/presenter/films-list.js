@@ -260,10 +260,11 @@ export default class FilmsList {
             this._commentsModel.set(updateType, film.id, comments);
             this._filmsModel.update(updateType, film);
             this._popupPresenter.resetInput();
-            this._popupPresenter.setDefaultStatus();
           })
           .catch(() => {
             this._popupPresenter.shakeInputForm();
+          })
+          .finally(() => {
             this._popupPresenter.setDefaultStatus();
           });
         break;

@@ -46,7 +46,7 @@ export default class FilmCard {
   }
 
   shake() {
-    shake(this._view.getElement());
+    shake(this._view.getElement().querySelector('.film-card'));
   }
 
   _handleViewClick() {
