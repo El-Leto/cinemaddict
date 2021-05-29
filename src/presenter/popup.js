@@ -86,7 +86,7 @@ export default class Popup {
   }
 
   isOpen(film) {
-    return this._view !== null && this._film.id == film.id;
+    return this._view !== null && this._film.id === film.id;
   }
 
   resetInput() {
