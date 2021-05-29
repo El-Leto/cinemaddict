@@ -1,5 +1,5 @@
 import { createElement } from '../utils/render.js';
-import { VISUALLY_HIDDEN, TIMEOUT } from '../const.js';
+import { VISUALLY_HIDDEN } from '../const.js';
 
 export default class Abstract {
   constructor() {
@@ -33,10 +33,5 @@ export default class Abstract {
 
   hide() {
     this.getElement().classList.add(VISUALLY_HIDDEN);
-  }
-
-  shake() {
-    this.getElement().classList.add('shake');
-    setTimeout(() => this.getElement().classList.remove('shake'), TIMEOUT);
   }
 }

@@ -1,3 +1,5 @@
+import { SHAKE_TIMEOUT } from '../const.js';
+
 const truncateText = (text, maxLength) =>
   text.length > maxLength
     ? `${text.slice(0, maxLength - 1)}…`
@@ -7,4 +9,9 @@ const getСapitalLetter = (word) => (
   `${word[0].toUpperCase()}${word.slice(1)}`
 );
 
-export { truncateText, getСapitalLetter };
+const shake = (element) => {
+  element.classList.add('shake');
+  setTimeout(() => element.classList.remove('shake'), SHAKE_TIMEOUT);
+};
+
+export { truncateText, getСapitalLetter, shake };

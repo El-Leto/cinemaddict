@@ -1,6 +1,7 @@
 import { createButtonCloseTemplate, createTableTemplate, createControlsTemplate, createCommentListTemplate } from './popup/index.js';
 import SmartView from './smart.js';
-import { TIMEOUT, PopupState } from '../const.js';
+import { PopupState } from '../const.js';
+import { shake } from '../utils/common.js';
 
 const createPopupTemplate = (state) => {
   const {
@@ -81,8 +82,14 @@ export default class Popup extends SmartView {
 
   shakeInputForm() {
     const newCommentForm = this.getElement().querySelector('.film-details__comment-input');
-    newCommentForm.classList.add('shake');
-    setTimeout(() => this.getElement().classList.remove('shake'), TIMEOUT);
+    shake(newCommentForm);
+  }
+
+  shakeButtonDelete(id) {
+    const deleteButton = this.getElement()
+      .querySelector(`.film-details__comment-delete[data-id="${id}"]`)
+      .closest('.film-details__comment');
+    shake(deleteButton);
   }
 
   setState(state, deleteId) {
@@ -98,7 +105,7 @@ export default class Popup extends SmartView {
         this.updateData(
           {
             isDeleting: true,
-            deleteId: deleteId,
+            deleteId,
           },
         );
         break;

@@ -246,6 +246,11 @@ export default class FilmsList {
             );
           })
           .catch(() => {
+            if (this._popupPresenter !== null ) {
+              this._popupPresenter.shake();
+              this._popupPresenter.setDefaultStatus();
+              return;
+            }
             this._filmCardPresenter[update.id].shake();
           });
         break;
@@ -259,6 +264,7 @@ export default class FilmsList {
             this._popupPresenter.setDefaultStatus();
           })
           .catch(() => {
+            this._popupPresenter.setDefaultStatus();
             this._popupPresenter.shakeInputForm();
           });
         break;

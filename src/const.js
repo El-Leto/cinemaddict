@@ -1,4 +1,4 @@
-const TIMEOUT = 1000;
+const SHAKE_TIMEOUT = 1000;
 
 const EMOJIS = [
   'smile',
@@ -55,4 +55,4 @@ const PopupState = {
   ABORTING: 'aborting',
 };
 
-export { TIMEOUT, EMOJIS, SortType, UpdateType, UserAction, FilterType, VISUALLY_HIDDEN, TimeRange, PopupState };
+export { SHAKE_TIMEOUT, EMOJIS, SortType, UpdateType, UserAction, FilterType, VISUALLY_HIDDEN, TimeRange, PopupState };

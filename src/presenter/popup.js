@@ -1,6 +1,7 @@
 import PopupView from '../view/popup.js';
 import { render, remove } from '../utils/render.js';
 import {UserAction, UpdateType, PopupState} from '../const.js';
+import { shake } from '../utils/common.js';
 
 const HIDE_CLASS = 'hide-overflow';
 
@@ -80,7 +81,7 @@ export default class Popup {
         }
       })
       .catch(() => {
-        this._view.showError();
+        this._view.shake();
       });
   }
 
@@ -90,6 +91,10 @@ export default class Popup {
 
   resetInput() {
     this._view.resetInput();
+  }
+
+  shake() {
+    shake(this._view.getElement());
   }
 
   shakeInputForm() {
@@ -186,7 +191,7 @@ export default class Popup {
       })
       .catch(() => {
         this._view.setState(PopupState.ABORTING);
-        this._view.shake();
+        this._view.shakeButtonDelete(commentId);
       });
   }
 
