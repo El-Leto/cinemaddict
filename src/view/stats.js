@@ -180,7 +180,7 @@ export default class Stats extends SmartView {
   }
 
   getTemplate() {
-    return createStatsTemplate(this._rankName.getStatus(), this._getWatchedStats(), this._state, this._getWatchedFilms());
+    return createStatsTemplate(this._rankName, this._getWatchedStats(), this._state, this._getWatchedFilms());
   }
 
   restoreHandlers() {

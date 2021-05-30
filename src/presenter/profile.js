@@ -5,12 +5,12 @@ import {getRankTitle, countWatchedFilms} from '../utils/statistics.js';
 export default class Profile {
   constructor(container, filmsModel) {
     this._container = container;
-    this._filmsModel = filmsModel;
+    this._model = filmsModel;
 
-    this._profileView = null;
+    this._view = null;
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
-    this._filmsModel.subscribe(this._handleModelEvent);
+    this._model.subscribe(this._handleModelEvent);
   }
 
   init() {
@@ -18,7 +18,7 @@ export default class Profile {
   }
 
   _getFilms() {
-    return this._filmsModel.get();
+    return this._model.get();
   }
 
   getStatus() {
@@ -26,21 +26,21 @@ export default class Profile {
   }
 
   _render() {
-    const prevProfileView = this._profileView;
-    this._profileView = new ProfileView(this.getStatus());
+    const prevView = this._view;
+    this._view = new ProfileView(this.getStatus());
 
-    if (this._filmsModel.isEmpty()) {
+    if (this._model.isEmpty()) {
       return;
     }
 
-    if (prevProfileView === null) {
-      render(this._container, this._profileView);
+    if (prevView === null) {
+      render(this._container, this._view);
 
       return;
     }
 
-    replace(this._profileView, prevProfileView);
-    remove(prevProfileView);
+    replace(this._view, prevView);
+    remove(prevView);
   }
 
   _handleModelEvent() {

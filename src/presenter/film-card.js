@@ -20,7 +20,7 @@ export default class FilmCard {
   init(film) {
     this._film = film;
 
-    const prevFilmCardView = this._view;
+    const prevView = this._view;
 
     this._view = new FilmCardView(film);
 
@@ -32,13 +32,13 @@ export default class FilmCard {
     this._view.setFavoriteClickHandler(this._handleFavoriteClick);
     this._view.setWatchedClickHandler(this._handleWatchedClick);
 
-    if (prevFilmCardView === null) {
+    if (prevView === null) {
       render(this._container, this._view);
       return;
     }
 
-    replace(this._view, prevFilmCardView);
-    remove(prevFilmCardView);
+    replace(this._view, prevView);
+    remove(prevView);
   }
 
   destroy() {

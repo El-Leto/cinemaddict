@@ -6,11 +6,11 @@ import {getRankTitle, countWatchedFilms} from '../utils/statistics.js';
 export default class Stats {
   constructor(container, filmsModel, profilePresenter) {
     this._container = container;
-    this._filmsModel = filmsModel;
+    this._model = filmsModel;
     this._profile = profilePresenter;
     this._range = TimeRange.ALL_TIME;
 
-    this._statsView = null;
+    this._view = null;
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
   }
@@ -20,11 +20,11 @@ export default class Stats {
   }
 
   show() {
-    this._statsView.show();
+    this._view.show();
   }
 
   hide() {
-    this._statsView.hide();
+    this._view.hide();
   }
 
   _handleModelEvent() {
@@ -32,7 +32,7 @@ export default class Stats {
   }
 
   _getFilms() {
-    return this._filmsModel.get();
+    return this._model.get();
   }
 
   _getStatus() {
@@ -40,16 +40,16 @@ export default class Stats {
   }
 
   _render() {
-    const prevStatsView = this._statsView;
-    this._statsView = new StatsView(this._getFilms(), this._profile);
+    const prevView = this._view;
+    this._view = new StatsView(this._getFilms(), this._profile.getStatus());
 
-    if (prevStatsView === null) {
-      render(this._container, this._statsView);
+    if (prevView === null) {
+      render(this._container, this._view);
 
       return;
     }
-    replace(this._statsView, prevStatsView);
-    remove(prevStatsView);
+    replace(this._view, prevView);
+    remove(prevView);
   }
 }
 

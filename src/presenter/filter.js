@@ -20,18 +20,18 @@ export default class Filter {
 
   init() {
     const filters = this._get();
-    const prevFilter = this._view;
+    const prevView = this._view;
 
     this._view = new MainNavigationView(filters, this._model.getType());
     this._view.setFilterTypeClickHandler(this._handleMenuItemChange);
 
-    if (prevFilter === null) {
+    if (prevView === null) {
       render(this._container, this._view);
       return;
     }
 
-    replace(this._view, prevFilter);
-    remove(prevFilter);
+    replace(this._view, prevView);
+    remove(prevView);
   }
 
   setMenuClickHandler(callback) {

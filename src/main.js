@@ -1,5 +1,3 @@
-//import TopRatedFilmsListView from './view/top-rated-films-list.js';
-//import MostCommentedFilmsListView from './view/most-commented-films-list.js';
 import StatisticsView from './view/statistics.js';
 import { render, remove } from './utils/render.js';
 import FilmsListPresenter from './presenter/films-list.js';
@@ -14,11 +12,6 @@ import Api from './api.js';
 
 const AUTHORIZATION = 'Basic 43el27leto1302';
 const END_POINT = 'https://14.ecmascript.pages.academy/cinemaddict';
-
-// const FilmCount = {
-//   ALL: 5,
-//   EXTRA: 2,
-// };
 
 const siteMain = document.querySelector('.main');
 const header = document.querySelector('.header');
