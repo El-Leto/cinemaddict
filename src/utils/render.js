@@ -33,7 +33,6 @@ const createElement = (template) => {
   return wrapper.firstChild;
 };
 
-// Пока не используется
 const replace = (newChild, oldChild) => {
   if (oldChild === null || newChild === null) {
     throw new Error('Can\'t replace unexisting elements');
